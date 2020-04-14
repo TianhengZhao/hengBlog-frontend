@@ -20,6 +20,7 @@
 </template>
 
 <script>/* eslint-disable */
+import axios from 'axios'
   export default {
     name: 'signin',
     data(){
@@ -80,6 +81,32 @@
       }
     },
     methods: {
+      signin(sForm) {
+        this.$refs.sForm.validate((valid) => {    //this.$refs[sForm].validate会显示validate无定义
+          if (valid) {
+            axios.post('http://localhost:5000/signinData', {   //localhost换成ip呢？？？？
+              name: this.sForm.name,
+              password: this.sForm.password,
+              email: this.sForm.email,
+            })
+              .then((response) => {
+                if (response.status === 200) {
+                  this.$message({             //message消息提示
+                    message: '恭喜你，注册成功！',
+                    type: 'success'
+                  });
+                  this.$router.push("/");
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
       back(){
         this.$router.push("/");    //返回到登录页面
       }
