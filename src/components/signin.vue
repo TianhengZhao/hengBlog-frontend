@@ -1,8 +1,8 @@
 <template>
   <div class="container">
   <el-form :model="sForm" :rules="rules" ref="sForm" label-width="100px" class="sForm">
-    <el-form-item  label="用户名" prop="name">
-      <el-input v-model="sForm.name" placeholder="长度不超过20字符"></el-input>
+    <el-form-item  label="用户名" prop="username">
+      <el-input v-model="sForm.username" placeholder="长度不超过20字符"></el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password" >
       <el-input type="password" v-model="sForm.password"  placeholder="长度3-15位"></el-input>
@@ -67,7 +67,7 @@ import axios from 'axios'
       };
       return{
         sForm: {
-          name:"",
+          username:"",
           password:"",
           checkpass:"",
           email:""
@@ -84,18 +84,28 @@ import axios from 'axios'
       signin(sForm) {
         this.$refs.sForm.validate((valid) => {    //this.$refs[sForm].validate会显示validate无定义
           if (valid) {
-            axios.post('http://localhost:5000/signinData', {   //localhost换成ip呢？？？？
-              name: this.sForm.name,
+            console.log(this.sForm.username)
+            console.log(this.sForm.password)
+            console.log(this.sForm.email)
+            axios.post('http://localhost:5000/auth/signinData', {   //localhost换成ip呢？？？？
+              username: this.sForm.username,
               password: this.sForm.password,
               email: this.sForm.email,
             })
               .then((response) => {
-                if (response.status === 200) {
+                console.log(response)
+                if (response.data === 'Success') {
                   this.$message({             //message消息提示
                     message: '恭喜你，注册成功！',
                     type: 'success'
                   });
                   this.$router.push("/");
+                }
+                else if(response.data === 'Wrong Name'){
+                  this.$message.error('该用户名已使用！');
+                }
+                else if(response.data === 'Wrong Email'){
+                  this.$message.error('该邮箱已使用！');
                 }
               })
               .catch(function (error) {

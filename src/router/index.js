@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/components/login'
 import signin from '@/components/signin'
-import test from '@/components/test'
+
 Vue.use(Router)
 /* eslint-disable */
 export default new Router({
@@ -18,11 +18,6 @@ export default new Router({
       path: '/signin',
       name: 'signin',
       component: signin
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: test
     }
 
   ]

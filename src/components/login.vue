@@ -8,41 +8,75 @@
           <el-button slot="prepend" icon="el-icon-user"></el-button>
         </el-input>
       </el-form-item>
-      <el-form-item label="密 码:">
+      <el-form-item label="密 码:" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码">
           <el-button slot="prepend" icon="el-icon-key"></el-button>
         </el-input>
       </el-form-item>
       <el-form-item>
-          <el-checkbox label="记住密码" name="remember" id="rem">
+          <el-checkbox label="记住密码" name="remember" id="rem" v-model="form.rem">
           </el-checkbox>
         <el-link type="primary" id="signin" @click="signin">注册</el-link>
       </el-form-item>
-      <el-button type="primary" icon="el-icon-user-solid" @click="login">登 录</el-button>
+      <el-button type="primary" icon="el-icon-user-solid" @click="login(form)">登 录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>/* eslint-disable */
+import axios from 'axios'
   export default {
     name: 'login',
     data() {
+      var checkName = (rule,value,callback)=> {
+        if (value === '') {
+          callback(new Error('请输入用户名'));
+        }
+        else return callback();                              //千万不要忘记返回！！
+      };
+      var checkPass = (rule,value,callback)=> {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        }
+        else return callback();
+      };
       return {
         form: {
           username: "",
-          password: ""
+          password: "",
+          rem:false
+
         },
         rules: {
-          username: [{ required: true, message: "请输入用户名", trigger: "blur" }]
+          username: [{ validator: checkName, trigger: "blur" }],
+          password: [{ validator: checkPass, trigger: "blur" }]
         }
       };
     },
     methods: {
-      login() {
+      login(form){
         // 数据校验
-        this.$refs.form.validate(valid => {
+        this.$refs.form.validate((valid) => {
           if (valid) {
-            console.log('验证成功')
+            console.log(this.form.rem)
+            axios.post('http://localhost:5000/auth/loginData', {   //localhost换成ip呢？？？？
+               username: this.form.username,
+               password: this.form.password,
+               rem:this.form.rem
+             })
+               .then((response) => {
+                 console.log(response)
+                 if (response.data === 'Success') {
+                   this.$message({             //message消息提示
+                     message: '恭喜你，登录成功！',
+                     type: 'success'
+                   });
+                 }
+                 else if(response.data === 'Wrong'){
+                   this.$message.error('用户名或密码错误！');
+                 }
+
+               })
           }
         });
       },
