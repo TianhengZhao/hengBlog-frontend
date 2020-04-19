@@ -67,10 +67,11 @@ import axios from 'axios'
                .then((response) => {
                  console.log(response)
                  if (response.data === 'Success') {
-                   this.$message({             //message消息提示
+                   this.$router.push("mainpage")
+                  /* this.$message({             //message消息提示
                      message: '恭喜你，登录成功！',
                      type: 'success'
-                   });
+                   });*/
                  }
                  else if(response.data === 'Wrong'){
                    this.$message.error('用户名或密码错误！');
