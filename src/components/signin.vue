@@ -21,6 +21,7 @@
 
 <script>/* eslint-disable */
 import axios from 'axios'
+import store from '../store.js'
   export default {
     name: 'signin',
     data(){
@@ -99,6 +100,7 @@ import axios from 'axios'
                     message: '恭喜你，注册成功！',
                     type: 'success'
                   });
+                  store.setNewAction();    //注册成功后，修改store中状态
                   this.$router.push("/");
                 }
                 else if(response.data === 'Wrong Name'){

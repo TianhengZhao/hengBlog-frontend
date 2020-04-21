@@ -25,6 +25,7 @@
 
 <script>/* eslint-disable */
 import axios from 'axios'
+import store from '../store'
   export default {
     name: 'login',
     data() {
@@ -67,11 +68,11 @@ import axios from 'axios'
                .then((response) => {
                  console.log(response)
                  if (response.data === 'Success') {
-                   this.$router.push("mainpage")
-                  /* this.$message({             //message消息提示
-                     message: '恭喜你，登录成功！',
-                     type: 'success'
-                   });*/
+                   store.resetNotNewAction();  //登录成功后，修改store中状态
+                   window.localStorage.setItem('token', true);   //将token值设为true
+                   store.loginAction();
+                   this.$router.push("/");
+
                  }
                  else if(response.data === 'Wrong'){
                    this.$message.error('用户名或密码错误！');
@@ -95,7 +96,7 @@ import axios from 'axios'
     height:120px;
   }
   .container {
-    margin-top: 100px;
+    margin-top: 10px;
     width: 100%;
     height: 100%;
   }
