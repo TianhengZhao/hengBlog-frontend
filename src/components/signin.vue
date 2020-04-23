@@ -85,9 +85,6 @@ import store from '../store.js'
       signin(sForm) {
         this.$refs.sForm.validate((valid) => {    //this.$refs[sForm].validate会显示validate无定义
           if (valid) {
-            console.log(this.sForm.username)
-            console.log(this.sForm.password)
-            console.log(this.sForm.email)
             axios.post('http://localhost:5000/auth/signinData', {   //localhost换成ip呢？？？？
               username: this.sForm.username,
               password: this.sForm.password,
@@ -100,7 +97,7 @@ import store from '../store.js'
                     message: '恭喜你，注册成功！',
                     type: 'success'
                   });
-                  store.setNewAction();    //注册成功后，修改store中状态
+                  store.setNewAction();    //注册成功后，修改store中状态，为什么此处要把is_new更新为true？？？？
                   this.$router.push("/");
                 }
                 else if(response.data === 'Wrong Name'){

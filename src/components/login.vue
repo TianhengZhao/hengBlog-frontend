@@ -59,7 +59,6 @@ import store from '../store'
         // 数据校验
         this.$refs.form.validate((valid) => {
           if (valid) {
-            console.log(this.form.rem)
             axios.post('http://localhost:5000/auth/loginData', {   //localhost换成ip呢？？？？
                username: this.form.username,
                password: this.form.password,
@@ -67,10 +66,10 @@ import store from '../store'
              })
                .then((response) => {
                  console.log(response)
-                 if (response.data === 'Success') {
-                   store.resetNotNewAction();  //登录成功后，修改store中状态
-                   window.localStorage.setItem('token', true);   //将token值设为true
-                   store.loginAction();
+                 if (response.data !== 'Wrong') {
+                   store.resetNotNewAction();  //登录成功后，修改store中状态，为什么此处把is_new变成false？？？？
+                   window.localStorage.setItem('token',response.data );   //存入token值
+                   store.loginAction();        //is_authenticated变为true
                    this.$router.push("/");
 
                  }
