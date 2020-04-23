@@ -59,7 +59,7 @@ import store from '../store'
         // 数据校验
         this.$refs.form.validate((valid) => {
           if (valid) {
-            axios.post('http://localhost:5000/auth/loginData', {   //localhost换成ip呢？？？？
+            axios.post('/auth/loginData', {   //localhost换成ip呢？？？？
                username: this.form.username,
                password: this.form.password,
                rem:this.form.rem

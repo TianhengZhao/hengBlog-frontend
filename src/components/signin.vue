@@ -85,7 +85,7 @@ import store from '../store.js'
       signin(sForm) {
         this.$refs.sForm.validate((valid) => {    //this.$refs[sForm].validate会显示validate无定义
           if (valid) {
-            axios.post('http://localhost:5000/auth/signinData', {   //localhost换成ip呢？？？？
+            axios.post('/auth/signinData', {   //localhost换成ip呢？？？？
               username: this.sForm.username,
               password: this.sForm.password,
               email: this.sForm.email,

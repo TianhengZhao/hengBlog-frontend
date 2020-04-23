@@ -5,7 +5,7 @@ export default {
   state: {
     is_new: false  ,  //共享状态
     is_authenticated: window.localStorage.getItem('token') ? true : false,
-    user_id:window.localStorage.getItem('token') ?JSON.parse(escape(atob(((window.localStorage.getItem('token')).replace(/-/g, "+").replace(/_/g, "/")).split('.')[1]))).user_id : 0
+    user_id:window.localStorage.getItem('token') ? JSON.parse(atob(window.localStorage.getItem('token').split('.')[1])).id:0
   },
 
     setNewAction () {
@@ -19,7 +19,7 @@ export default {
   loginAction () {
     if (this.debug) { console.log('loginAction triggered') }
     this.state.is_authenticated = true
-    //this.state.user_id= JSON.parse(escape(atob(((window.localStorage.getItem('token')).replace(/-/g, "+").replace(/_/g, "/")).split('.')[1]))).id
+    this.state.user_id= JSON.parse(atob(window.localStorage.getItem('token').split('.')[1])).id
   },
   logoutAction () {
     if (this.debug) console.log('logoutAction triggered')

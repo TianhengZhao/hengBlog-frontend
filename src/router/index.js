@@ -32,6 +32,11 @@ const router=new Router({
       path: '/navbar',
       name: 'navbar',
       component: navbar
+    },
+    {
+      path: '/user/:id',
+      name: 'profile',
+      component: profile
     }
   ]
 
