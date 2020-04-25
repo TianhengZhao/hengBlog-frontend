@@ -4,6 +4,7 @@ import login from '@/components/login'
 import signin from '@/components/signin'
 import navbar from '@/components/navbar'
 import home from '@/components/home'
+import profile from '@/components/profile'
 Vue.use(Router)
 /* eslint-disable */
 const router=new Router({
@@ -34,7 +35,7 @@ const router=new Router({
       component: navbar
     },
     {
-      path: '/user/:id',
+      path: '/:id',
       name: 'profile',
       component: profile
     }

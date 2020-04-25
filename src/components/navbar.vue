@@ -2,8 +2,8 @@
   <el-menu  :default-active="$route.path" mode="horizontal" router>    <!--router使得index成为导航路由-->
     <el-menu-item index="/">我的博客</el-menu-item>
     <el-submenu index="2" v-if="sharedState.is_authenticated" class="setting">
-      <template slot="title" >我的名字</template>
-      <el-menu-item index="2-1">我的主页</el-menu-item>
+      <template slot="title" >{{sharedState.user_name}}</template>
+      <el-menu-item :index="'/'+sharedState.user_id">我的主页</el-menu-item>   <!--动态设置路由-->
       <el-menu-item index="2-2">修改信息</el-menu-item>
       <el-menu-item index="2-3" @click="logout">退出登录</el-menu-item>
     </el-submenu>
@@ -25,6 +25,9 @@ import store from '../store'
       logout (e) {
         store.logoutAction()
         this.$router.push('/login')
+      },
+      mypro(){
+        this.$router.push('/'+sharedState.user_id)
       }
     }
 
