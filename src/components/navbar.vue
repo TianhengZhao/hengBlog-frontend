@@ -25,9 +25,6 @@ import store from '../store'
       logout (e) {
         store.logoutAction()
         this.$router.push('/login')
-      },
-      mypro(){
-        this.$router.push('/'+sharedState.user_id)
       }
     }
 
