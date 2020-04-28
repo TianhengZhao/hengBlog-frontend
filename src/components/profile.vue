@@ -2,9 +2,17 @@
   <el-container>
     <el-aside  class="aside">
       <div class="info1">
-        <div class="ava"><img src="../assets/avatar/1.jpg"/></div>
-        <div class="ava" ><h3></h3></div>
+        <div class="ava"><img :src='this.user._links.avatar'/></div>
+        <div class="ava" ><h3>{{this.user.username}}</h3></div>
       </div>
+      <div v-if="this.user.sex === null"><h3>性别: - </h3></div>
+      <div v-else-if="this.user.sex === '1'"><h3>性别: 男 </h3></div>
+      <div v-else><h3>性别: 女 </h3></div>
+      <div><h3>注册时间:{{this.user.reg_since}}</h3></div>
+      <div v-if="this.user.about_me === null"><h3>简介: - </h3></div>
+      <div v-else><h3>简介:{{this.user.about_me}}</h3></div>
+      <el-button v-if="this.user.id === sharedState.user_id"  type="primary" round @click="editInfo">编辑资料</el-button>
+
     </el-aside>
     <el-container>
       <el-header>Header</el-header>
@@ -37,18 +45,20 @@ import axios from 'axios'
         },
         methods: {
           getUser (id) {
-            const path = '/user/1' // document.getElementById(id)
-            console.log(path)
+            const path = '/user/'+id
             axios.get(path)
               .then((response) => {
-                console.log(response.data)
-                this.user= response.data
-
+                if(response.status === 200)
+                  this.user= response.data
               })
               .catch((error) => {
                 // eslint-disable-next-line
                 console.error(error)
+                //this.$router.push("/NotFound")                  这里的问题还没解决
               });
+          },
+          editInfo(e){
+            this.$router.push("/user/editProfile")   // 为什么/login就uncaught promise？？？？
           }
         },
        created () {   //页面渲染后自动执行
@@ -57,7 +67,7 @@ import axios from 'axios'
             this.getUser(user_id)
           },
           // 当 id 变化后重新加载数据
-          beforeRouteUpdate (to, from, next) {
+       beforeRouteUpdate (to, from, next) {
             this.getUser(to.params.id)
             next()
           }

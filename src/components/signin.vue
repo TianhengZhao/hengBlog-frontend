@@ -126,7 +126,7 @@ import store from '../store.js'
 
 <style scoped>
   .container {
-    margin-top: 100px;
+    margin-top: 50px;
     width: 100%;
     height: 100%;
   }
