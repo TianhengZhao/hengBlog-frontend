@@ -34,7 +34,5 @@ import store from '../store'
   .setting{
     float: right;
   }
-  .sub{
-    width:50px;
-  }
+
 </style>

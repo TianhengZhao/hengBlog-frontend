@@ -3,15 +3,17 @@
     <el-aside  class="aside">
       <div class="info1">
         <div class="ava"><img :src='this.user._links.avatar'/></div>
-        <div class="ava" ><h3>{{this.user.username}}</h3></div>
+        <div class="ava" ><h2>{{this.user.username}}</h2></div>
       </div>
-      <div v-if="this.user.sex === null"><h3>性别: - </h3></div>
-      <div v-else-if="this.user.sex === '1'"><h3>性别: 男 </h3></div>
-      <div v-else><h3>性别: 女 </h3></div>
-      <div><h3>注册时间:{{this.user.reg_since}}</h3></div>
-      <div v-if="this.user.about_me === null"><h3>简介: - </h3></div>
-      <div v-else><h3>简介:{{this.user.about_me}}</h3></div>
-      <el-button v-if="this.user.id === sharedState.user_id"  type="primary" round @click="editInfo">编辑资料</el-button>
+      <ul id="list">
+      <li v-if="this.user.sex === null" class="info2"><h4>性别: - </h4></li>
+      <li v-else-if="this.user.sex === '1'" class="info2"><h4>性别: 男 </h4></li>
+      <li v-else class="info2"><h4>性别: 女 </h4></li>
+      <li class="info2"><h4>注册时间:{{$moment(user.reg_since).format('LLL') }}</h4></li>   <!--格式化 UTC 时间为本地时间-->
+      <li v-if="this.user.about_me === null" class="info2"><h4>简介: - </h4></li>
+      <li v-else class="info2"><h4>简介:{{this.user.about_me}}</h4></li>
+      </ul>
+      <el-button v-if="this.user.id === sharedState.user_id" id="button" type="primary" round @click="editInfo">编辑资料</el-button>
 
     </el-aside>
     <el-container>
@@ -24,6 +26,7 @@
 <script>/* eslint-disable */
 import store from '../store'
 import axios from 'axios'
+
   export default {
     name: 'profile',
     data () {
@@ -84,6 +87,7 @@ import axios from 'axios'
   .ava{
     float: left;
     margin: 15px;
+
   }
   .info1{
     margin-top: 20px;
@@ -91,11 +95,29 @@ import axios from 'axios'
 
   }
   .aside{
-    border:2px solid #2c3e50;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #cac6c6;
     width: 250px;
+    line-height: 50px;
+
   }
   img{
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+
   }
+  .info2{
+    text-align: left;
+    list-style: none;
+  }
+  #list:after{
+    content: "";
+    display: table;
+    clear: both;
+  }
+  #button{
+    margin: 20px;
+  }
+
 </style>
