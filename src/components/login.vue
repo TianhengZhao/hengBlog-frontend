@@ -102,7 +102,7 @@ import store from '../store'
   .login-page {
     border-radius: 5px;
     margin: auto;
-    width: 350px;
+    width: 500px;
     padding: 35px 55px 15px;
     background: #fff;
     border: 1px solid #eaeaea;

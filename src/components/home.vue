@@ -12,6 +12,14 @@
       </el-form-item>
       <el-button type="primary"  @click="submit(postForm)" class="but">发 表</el-button>
     </el-form>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-size="3"
+      layout="total,  prev, pager, next, jumper"
+      :total="totalPages">
+    </el-pagination>
   </div>
 </template>
 
@@ -21,9 +29,13 @@ import store from '../store'
 import '../assets/bootstrap-markdown/js/bootstrap-markdown.js'
 import '../assets/bootstrap-markdown/js/bootstrap-markdown.zh.js'
 import '../assets/bootstrap-markdown/js/marked.js'
+import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
 
   export default {
     name: 'home',
+    components:{
+      VueMarkdown                           //什么意思？？？？
+    },
     data() {
       var checkTitle = (rule,value,callback)=>{
         if(value === '')
@@ -44,6 +56,9 @@ import '../assets/bootstrap-markdown/js/marked.js'
       }
       return{
         sharedState: store.state,
+        posts: '',
+        iter_pages: [],
+        totalPages: '',
         postForm:{
           title:'',
           summary:'',
@@ -79,7 +94,30 @@ import '../assets/bootstrap-markdown/js/marked.js'
             })
           }
         })
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      getPosts(){
+        let page=1
+        let per_page=3
+        if (typeof this.$route.query.page != 'undefined') {              //用到 typeof
+          page = this.$route.query.page
+        }
+        if (typeof this.$route.query.per_page != 'undefined') {
+          per_page = this.$route.query.per_page
+        }
+        const path='post/getPosts?page=${page}&per_page=${per_page}'    //在url中添加参数
+        axios.get(path)
+        .then((response)=>{
+          this.posts=response.data
+        })
+
       }
+
 
 
     },
@@ -97,5 +135,8 @@ import '../assets/bootstrap-markdown/js/marked.js'
 </script>
 
 <style scoped>
-
+.container{
+  width:900px;
+  margin-top: 20px;
+}
 </style>

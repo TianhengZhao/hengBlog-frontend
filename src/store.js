@@ -6,7 +6,7 @@ export default {
     is_new: false  ,  //共享状态
     is_authenticated: window.localStorage.getItem('token') ? true : false,
     user_id:window.localStorage.getItem('token') ? JSON.parse(atob(window.localStorage.getItem('token').split('.')[1])).id:0,
-    user_name:JSON.parse(atob(window.localStorage.getItem('token').split('.')[1])).name
+    user_name:window.localStorage.getItem('token') ?JSON.parse(atob(window.localStorage.getItem('token').split('.')[1])).name:null
   },
 
     setNewAction () {

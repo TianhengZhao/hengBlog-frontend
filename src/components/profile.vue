@@ -6,12 +6,12 @@
         <div class="ava" ><h2>{{this.user.username}}</h2></div>
       </div>
       <ul id="list">
-      <li v-if="this.user.sex === null" class="info2"><h4>性别: - </h4></li>
-      <li v-else-if="this.user.sex === '1'" class="info2"><h4>性别: 男 </h4></li>
-      <li v-else class="info2"><h4>性别: 女 </h4></li>
-      <li class="info2"><h4>注册时间:{{$moment(user.reg_since).format('LLL') }}</h4></li>   <!--格式化 UTC 时间为本地时间-->
+      <li v-if="this.user.sex === null" class="info2"><h6>性别: - </h6></li>
+      <li v-else-if="this.user.sex === '1'" class="info2"><h6>性别: 男 </h6></li>
+      <li v-else class="info2"><h6>性别: 女 </h6></li>
+      <li class="info2"><h6>注册时间:{{$moment(user.reg_since).format('LLL') }}</h6></li>   <!--格式化 UTC 时间为本地时间-->
       <li v-if="this.user.about_me === null" class="info2"><h4>简介: - </h4></li>
-      <li v-else class="info2"><h4>简介:{{this.user.about_me}}</h4></li>
+      <li v-else class="info2"><h6>简介:{{this.user.about_me}}</h6></li>
       </ul>
       <el-button v-if="this.user.id === sharedState.user_id" id="button" type="primary" round @click="editInfo">编辑资料</el-button>
 
@@ -98,7 +98,6 @@ import axios from 'axios'
     border-radius: 5px;
     box-shadow: 0 0 10px #cac6c6;
     width: 250px;
-    line-height: 50px;
 
   }
   img{
@@ -110,6 +109,9 @@ import axios from 'axios'
   .info2{
     text-align: left;
     list-style: none;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
   }
   #list:after{
     content: "";
