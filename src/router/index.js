@@ -7,6 +7,7 @@ import home from '@/components/home'
 import profile from '@/components/profile'
 import NotFound from '@/components/NotFound'
 import editProfile from '@/components/editProfile'
+import post from '@/components/post'
 Vue.use(Router)
 /* eslint-disable */
 const router=new Router({
@@ -50,6 +51,11 @@ const router=new Router({
       path: '/user/editProfile',
       name: 'editProfile',
       component: editProfile
+    },
+    {
+      path: '/post/:id',
+      name: 'post',
+      component: post
     }
   ]
 

@@ -18,7 +18,7 @@
            <img v-bind:src="items.author._links.avatar" class="post_ava">
          </router-link>
         <div class="post_top">
-        <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}" class="post_title">          <!--待修改-->
+        <router-link v-bind:to="{name:'post',params:{id:items.id}}" class="post_title">
           {{items.title}}
         </router-link>
           <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}" class="post_name">by:{{items.author.username}}</router-link>
@@ -30,9 +30,9 @@
         </vue-markdown>
       </div>
     <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="1"
+      @size-change="handleSizeChange"
+      :current-page=this.posts._meta.page
       :page-sizes="[3, 6, 10]"
       :page-size="3"
       layout="total, sizes, prev, pager, next, jumper"
@@ -76,15 +76,11 @@ export default {
     return{
       sharedState: store.state,
       posts: '',
-      iter_pages: [],
       totalItems: 0,
       postForm:{
         title:'',
         summary:'',
-        body:'',
-        errors:0,
-        titleError:null,
-        bodyError:null
+        body:''
       },
       rules:{
         title:[{validator:checkTitle,trigger:'blur'}],
@@ -99,32 +95,40 @@ export default {
       this.$refs.postForm.validate((valid) => {
         if (valid) {
           axios.post('post/add',{
-            title:this.postForm.title,
-            summary:this.postForm.summary,
-            body:this.postForm.body
-          })
-            .then((response)=>{
-              console.log(response)
-              if (response.data === 'Success') {
-                this.$message({             //message消息提示
-                  message: '恭喜你，注册成功！',
-                  type: 'success'
-                });
+                  title:this.postForm.title,
+                  summary:this.postForm.summary,
+                  body:this.postForm.body
+                })
+                  .then((response)=>{
+                    console.log(response)
+                    if (response.data === 'Success') {
+                      this.$message({             //message消息提示
+                        message: '发表成功！',
+                        type: 'success'
+                      });
+                      this.getPosts()
+                      this.postForm.title=''
+                      this.postForm.summary=''
+                      this.postForm.body=''
               }
             })
+            .catch((error) => {
+              this.$message.error('发表失败！');
+            });
         }
       })
     },
-    handleSizeChange(val) {
-      const path='post/getPosts?page=${page}&per_page='+val    //在url中添加参数
+    handleSizeChange(val) {                 //这两个函数有bug还没改好
+      const path='post/getPosts?page='+1+'&per_page='+val    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)
           this.posts=response.data
         })
+      handleCurrentChange(1)
     },
     handleCurrentChange(val) {                                    //改变页码
-      const path='post/getPosts?page='+val+'&per_page=${per_page}'    //在url中添加参数
+      const path='post/getPosts?page='+val+'&per_page='+this.posts._meta.per_page    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)
