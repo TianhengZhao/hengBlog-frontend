@@ -23,11 +23,23 @@
         </router-link>
           <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}" class="post_name">by:{{items.author.username}}</router-link>
         </div>
+        <div class="post_body">
         <vue-markdown
           class="post_summary"
           :source="items.summary"
         >
         </vue-markdown>
+        </div>
+        <div class="post_bottom">
+        <div class="buttons" v-if="items.author && items.author.id == sharedState.user_id">
+          <el-button size="mini"  icon="el-icon-delete" circle type="danger" @click="del(items.id)"></el-button>
+        </div>
+          <div class="info">
+          <i id="time">{{ $moment(items.timestamp).format('LLL') }}</i>
+          <el-divider direction="vertical"></el-divider>
+          <i class="el-icon-view" >{{items.views}}</i>
+          </div>
+        </div>
       </div>
     <el-pagination
       @current-change="handleCurrentChange"
@@ -64,7 +76,7 @@ export default {
       else callback()
     }
     var checkSummary = (rule,value,callback)=>{
-      if(value.length>100)
+      if(value.length>50)
         callback(new Error('摘要过长'))
       else callback()
     }
@@ -153,6 +165,35 @@ export default {
           this.totalItems=this.posts._meta.total_items
         })
 
+    },
+    del(id){
+      this.$confirm('确认删除该博客?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const path = 'post/getPost/' + id
+        this.$axios.delete(path)
+          .then((response)=> {
+            if(response.data == 'Success') {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              console.log('??????????????')
+              this.$router.push('/')
+            }
+            else  {
+              this.$router.push('/')
+              this.$message.error('删除失败！')
+            }
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
   created () {
@@ -181,7 +222,7 @@ export default {
   .post_item{
     border: #bebebe solid 1px;
     border-radius: 5px;
-    height: 120px;
+    height: 150px;
     margin: 5px;
   }
   .post_ava{
@@ -204,9 +245,27 @@ export default {
     float: left;
     font-size: large;
   }
+  .post_body{
+    padding-left: 90px;
+    height: 64px;
+  }
   .post_summary{
     float: left;
     font-size: small;
+    height: 24px;
+    text-align: left;
+  }
+  .buttons{
+    display: inline;
+    float: left;
+    margin-left: 90px;
+  }
+  .info{
+    float: right;
+    font-size: smaller;
+    color: #bebebe;
+    margin-right: 5px;
+    display: inline;
   }
 </style>
 
