@@ -8,6 +8,9 @@ import profile from '@/components/profile'
 import NotFound from '@/components/NotFound'
 import editProfile from '@/components/editProfile'
 import post from '@/components/post'
+import hisPosts from '@/components/user/hisPosts'
+import followers from '@/components/user/followers'
+import following from '@/components/user/following'
 Vue.use(Router)
 /* eslint-disable */
 const router=new Router({
@@ -35,12 +38,12 @@ const router=new Router({
     {
       path: '/navbar',
       name: 'navbar',
-      component: navbar
+      component: navbar,
     },
     {
       path: '/:id',
       name: 'profile',
-      component: profile
+      component: profile,
     },
     {
       path: '/NotFound',

@@ -180,11 +180,12 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-              console.log('??????????????')
-              this.$router.push('/')
+              this.$router.go(0);
+              //this.$router.push('/').catch(err => {console.log(err)})
+              //location.reload()
             }
             else  {
-              this.$router.push('/')
+             // this.$router.push('/')
               this.$message.error('删除失败！')
             }
           })

@@ -117,7 +117,8 @@ import store from '../store.js'
         });
       },
       back(){
-        this.$router.push("/");    //返回到登录页面
+        this.$router.push("/").catch(err => {err})
+            //返回到登录页面
       }
     }
 

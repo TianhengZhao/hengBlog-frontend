@@ -39,23 +39,6 @@ import VueMarkdown from 'vue-markdown'
       VueMarkdown
     },
     data(){
-      var checkTitle = (rule,value,callback)=>{
-        if(value === '')
-          callback(new Error('标题不能为空'))
-        else if(value.length>20)
-          callback(new Error('标题过长'))
-        else callback()
-      }
-      var checkSummary = (rule,value,callback)=>{
-        if(value.length>100)
-          callback(new Error('摘要过长'))
-        else callback()
-      }
-      var checkBody = (rule, value, callback)=>{
-        if(value === '')
-          callback(new Error('内容不能为空'))
-        else callback()
-      }
       return{
         sharedState:store.state,
         post:"",
