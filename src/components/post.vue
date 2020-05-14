@@ -46,11 +46,6 @@ import VueMarkdown from 'vue-markdown'
           title:'',
           summary:'',
           body:''
-        },
-        rules:{
-          title:[{validator:checkTitle,trigger:'blur'}],
-          summary:[{validator:checkSummary,trigger:'blur'}],
-          body:[{validator:checkBody,trigger:'blur'}]
         }
       }
     },

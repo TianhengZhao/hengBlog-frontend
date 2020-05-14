@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class="containe" v-if="this.user">
     <el-aside  class="aside">
       <div class="info1">
         <div class="ava"><img :src='this.user._links.avatar'/></div>
@@ -14,7 +14,7 @@
       <li v-else class="info2"><h6>简介:{{this.user.about_me}}</h6></li>
       </ul>
       <el-button v-if="this.user.id === sharedState.user_id" id="button" type="primary" round @click="editInfo">编辑资料</el-button>
-      <el-button v-else id="button" type="primary" round >添加关注</el-button>
+      <el-button v-else id="button" type="primary" round @click="follow(this.user.id,this.user.username)">添加关注</el-button>
     </el-aside>
     <el-container>
       <el-main> <el-tabs :tab-position="tabPosition" style="height: 200px;">
@@ -62,6 +62,7 @@ import hisPosts from '@/components/user/hisPosts'
               .then((response) => {
                 if(response.status === 200)
                   this.user= response.data
+                console.log(this.user)
               })
               .catch((error) => {
                 // eslint-disable-next-line
@@ -71,6 +72,25 @@ import hisPosts from '@/components/user/hisPosts'
           },
           editInfo(e){
             this.$router.push("/user/editProfile")   // 为什么/login就uncaught promise？？？？
+          },
+          follow(id, name){
+            const path = '/user/follow/'+id
+            axios.get(path)
+              .then((response) => {
+                if(response.data === 'Success')
+                  this.$message({
+                    type: 'success',
+                    message: '已成功关注'+name+'!'
+                  })
+                else{
+                  this.$message.error('关注失败！')
+                }
+              })
+              .catch((error) => {
+
+                console.error(error)
+
+              });
           }
         },
        created () {   //页面渲染后自动执行
@@ -92,6 +112,11 @@ import hisPosts from '@/components/user/hisPosts'
 </script>
 
 <style scoped>
+.containe{
+
+  height: 500px;                  /*如何设置和页面登高 height=100%*/
+
+}
   .ava{
     float: left;
     margin: 15px;
@@ -106,6 +131,7 @@ import hisPosts from '@/components/user/hisPosts'
     border-radius: 5px;
     box-shadow: 0 0 10px #cac6c6;
     width: 250px;
+    height: 100%;
 
   }
   img{

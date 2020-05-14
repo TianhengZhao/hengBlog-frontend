@@ -1,7 +1,6 @@
 <template>
-  <div  id="panel">
-    <div>{{user_id}}</div>
-    <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
+  <div  v-if="posts" id="panel">
+   <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
       <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}">
         <img v-bind:src="items.author._links.avatar" class="post_ava">
       </router-link>
@@ -42,15 +41,21 @@
 <script>/* eslint-disable */
 import store from '../../store'
 import axios from 'axios'
-
+import '../../assets/bootstrap-markdown/js/bootstrap-markdown.js'
+import '../../assets/bootstrap-markdown/js/bootstrap-markdown.zh.js'
+import '../../assets/bootstrap-markdown/js/marked.js'
+import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
 export default {
     name: 'hisPosts',
     props:['user_id'],
+    components:{
+    VueMarkdown                           //什么意思？？？？
+  },
     data(){
       return{
         sharedState: store.state,
         posts: '',
-        id:6,
+        id:0,
         totalItems:0
       }
     },
@@ -60,14 +65,54 @@ export default {
       if (typeof this.$route.query.page != 'undefined') {              //用到 typeof
         page = this.$route.query.page
       }
-      const path='post/getOnesPosts/'+this.id+'?page=${page}'    //在url中添加参数
+      let iid=this.$route.params.id
+      const path='post/getOnesPosts/'+iid+'?page=${page}'    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)
           this.posts=response.data
           this.totalItems=this.posts._meta.total_items
         })
-
+    },
+    handleSizeChange(val) {
+    },
+    handleCurrentChange(val) {                                    //改变页码
+      const path='post/getOnesPosts/'+iid+'?page='+val    //在url中添加参数
+      axios.get(path)
+        .then((response)=>{
+          console.log(response.data)
+          this.posts=response.data
+        })
+    },
+    del(id){
+      this.$confirm('确认删除该博客?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const path = 'post/getPost/' + id
+        this.$axios.delete(path)
+          .then((response)=> {
+            if(response.data == 'Success') {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$router.go(0);
+              //this.$router.push('/').catch(err => {console.log(err)})
+              //location.reload()
+            }
+            else  {
+              // this.$router.push('/')
+              this.$message.error('删除失败！')
+            }
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
    created () {

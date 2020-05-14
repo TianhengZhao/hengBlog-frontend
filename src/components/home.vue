@@ -137,7 +137,6 @@ export default {
           console.log(response.data)
           this.posts=response.data
         })
-      handleCurrentChange(1)
     },
     handleCurrentChange(val) {                                    //改变页码
       const path='post/getPosts?page='+val+'&per_page='+this.posts._meta.per_page    //在url中添加参数
