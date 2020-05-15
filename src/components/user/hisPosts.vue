@@ -1,5 +1,5 @@
 <template>
-  <div  v-if="posts" id="panel">
+  <div  v-if="posts" >
    <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
       <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}">
         <img v-bind:src="items.author._links.avatar" class="post_ava">
@@ -47,7 +47,7 @@ import '../../assets/bootstrap-markdown/js/marked.js'
 import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
 export default {
     name: 'hisPosts',
-    props:['user_id'],
+
     components:{
     VueMarkdown                           //什么意思？？？？
   },
@@ -62,11 +62,8 @@ export default {
   methods:{
     getPosts(){
       let page=1
-      if (typeof this.$route.query.page != 'undefined') {              //用到 typeof
-        page = this.$route.query.page
-      }
       let iid=this.$route.params.id
-      const path='post/getOnesPosts/'+iid+'?page=${page}'    //在url中添加参数
+      const path='post/getOnesPosts/'+iid+'?page='+page    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)

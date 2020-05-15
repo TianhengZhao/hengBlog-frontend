@@ -1,5 +1,5 @@
 <template>
-  <el-container class="containe" v-if="this.user">
+  <el-container class="containe" >
     <el-aside  class="aside">
       <div class="info1">
         <div class="ava"><img :src='this.user._links.avatar'/></div>
@@ -14,12 +14,13 @@
       <li v-else class="info2"><h6>简介:{{this.user.about_me}}</h6></li>
       </ul>
       <el-button v-if="this.user.id === sharedState.user_id" id="button" type="primary" round @click="editInfo">编辑资料</el-button>
-      <el-button v-else id="button" type="primary" round @click="follow(this.user.id,this.user.username)">添加关注</el-button>
+      <el-button v-else-if="user.is_following === false" id="button" type="primary" round @click="follow(user.id,user.username)">添加关注</el-button> <!--参数不加this-->
+      <el-button v-else id="button" type="danger" round @click="unfollow(user.id,user.username)">取消关注</el-button>
     </el-aside>
     <el-container>
       <el-main> <el-tabs :tab-position="tabPosition" style="height: 200px;">
-        <el-tab-pane label="TA的文章"><his-posts v-bind:user_id=this.user.id></his-posts></el-tab-pane>
-        <el-tab-pane label="TA的粉丝">TA的粉丝</el-tab-pane>
+        <el-tab-pane label="TA的文章"><his-posts ></his-posts></el-tab-pane>
+        <el-tab-pane label="TA的粉丝"><followers ></followers></el-tab-pane>
         <el-tab-pane label="TA的关注">TA的关注</el-tab-pane>
       </el-tabs>
       </el-main>
@@ -31,11 +32,12 @@
 import store from '../store'
 import axios from 'axios'
 import hisPosts from '@/components/user/hisPosts'
-
+import followers from '@/components/user/followers'
   export default {
     name: 'profile',
     components:{
-      hisPosts
+      hisPosts,
+      followers
     },
     data () {
       return {
@@ -48,6 +50,7 @@ import hisPosts from '@/components/user/hisPosts'
           about_me: '',
           reg_since: '',
           sex: '',
+          is_following:'',
           _links: {
             self: '',
             avatar: ''
@@ -84,6 +87,25 @@ import hisPosts from '@/components/user/hisPosts'
                   })
                 else{
                   this.$message.error('关注失败！')
+                }
+              })
+              .catch((error) => {
+
+                console.error(error)
+
+              });
+          },
+          unfollow(id, name){
+            const path = '/user/unfollow/'+id
+            axios.get(path)
+              .then((response) => {
+                if(response.data === 'Success')
+                  this.$message({
+                    type: 'success',
+                    message: '已取消关注'+name+'!'
+                  })
+                else{
+                  this.$message.error('取消关注失败！')
                 }
               })
               .catch((error) => {
