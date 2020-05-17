@@ -61,6 +61,7 @@ export default {
     },
   methods:{
     getPosts(){
+      console.log(this.$route)
       let page=1
       let iid=this.$route.params.id
       const path='post/getOnesPosts/'+iid+'?page='+page    //在url中添加参数
@@ -114,7 +115,11 @@ export default {
   },
    created () {
       this.getPosts()
-   }
+   },
+  beforeRouteUpdate (to, from, next) {
+    next()
+
+  }
 }
 </script>
 

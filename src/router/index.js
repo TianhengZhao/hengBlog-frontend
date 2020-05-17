@@ -42,8 +42,18 @@ const router=new Router({
     },
     {
       path: '/:id',
-      name: 'profile',
-      component: profile,
+      //name: 'profile',
+      component: profile,    // 在profile的<router-view>中使用
+      children:[
+        { path: '', component: hisPosts },      // 默认子路由，父路由不能指定 name
+        { path: 'hisPosts', name: 'hisPosts', component: hisPosts },     //         对应/:id/
+        { path: 'followers', name: 'followers', component: followers },  //         对应/:id/followers
+        { path: 'following', name: 'following', component: following },  //         对应/:id/following
+      ],
+      meta: {
+        requiresAuth: true                   //干嘛的？？？
+      }
+
     },
     {
       path: '/NotFound',

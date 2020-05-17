@@ -18,12 +18,20 @@
       <el-button v-else id="button" type="danger" round @click="unfollow(user.id,user.username)">取消关注</el-button>
     </el-aside>
     <el-container>
-      <el-main> <el-tabs :tab-position="tabPosition" style="height: 200px;">
-        <el-tab-pane label="TA的文章"><his-posts ></his-posts></el-tab-pane>
-        <el-tab-pane label="TA的粉丝"><followers ></followers></el-tab-pane>
-        <el-tab-pane label="TA的关注">TA的关注</el-tab-pane>
-      </el-tabs>
-      </el-main>
+      <div class="wrap">
+      <ul id="menu">
+        <li >
+          <router-link v-bind:to="{ name: 'hisPosts' }" v-bind:active-class="'active'" class="nav-link">TA的文章</router-link>
+        </li>
+        <li >
+          <router-link v-bind:to="{ name: 'followers' }" v-bind:active-class="'active'" class="nav-link">TA的粉丝</router-link>
+        </li>
+        <li>
+          <router-link v-bind:to="{ name: 'following' }" v-bind:active-class="'active'" class="nav-link">TA的关注</router-link>
+        </li>
+      </ul>
+      <router-view class="route"></router-view>
+      </div>
     </el-container>
   </el-container>
 </template>
@@ -35,10 +43,7 @@ import hisPosts from '@/components/user/hisPosts'
 import followers from '@/components/user/followers'
   export default {
     name: 'profile',
-    components:{
-      hisPosts,
-      followers
-    },
+
     data () {
       return {
         sharedState: store.state,
@@ -176,6 +181,40 @@ import followers from '@/components/user/followers'
   }
   #button{
     margin: 20px;
+  }
+  .wrap{
+    width: 80%;
+  }
+  #menu{
+    height: 30px;
+    list-style:none;
+    margin: 20px;
+    padding-left: 0px;
+  }
+  #menu li{
+    float: left;
+  }
+  .nav-link{
+    color: #2c3e50;
+    text-decoration:none;
+    border-bottom:1px solid #bebebe;
+    padding: 0;
+    margin: 10px;
+    padding-bottom: 5px;
+  }
+  .nav-link:hover{
+    color: #3a8ee6;
+    border-bottom:1px solid #3a8ee6;
+  }
+  .nav-link:checked{
+    color: #3a8ee6;
+    border-bottom:1px solid #3a8ee6;
+  }
+  .route{
+    float: left;
+    margin-left: 30px;
+    margin-top: 20px;
+    width: 100%;
   }
 
 </style>

@@ -14,14 +14,14 @@
     </el-form>
     <div v-if="posts" id="panel">                   <!--getPosts()加载完成后才显示，因为用到了posts数据-->
       <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
-         <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}">
+         <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
            <img v-bind:src="items.author._links.avatar" class="post_ava">
          </router-link>
         <div class="post_top">
         <router-link v-bind:to="{name:'post',params:{id:items.id}}" class="post_title">
           {{items.title}}
         </router-link>
-          <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}" class="post_name">by:{{items.author.username}}</router-link>
+          <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}" class="post_name">by:{{items.author.username}}</router-link>
         </div>
         <div class="post_body">
         <vue-markdown

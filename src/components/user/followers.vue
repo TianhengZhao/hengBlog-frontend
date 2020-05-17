@@ -5,12 +5,17 @@
         <img v-bind:src="items._links.avatar" class="ava">
       </router-link>
       <div class="top">
-        <router-link v-bind:to="{name:'profile',params:{id:items.id}}" class="name">
+        <router-link v-bind:to="{name:'hisPosts',params:{id:items.id}}" class="name">
           {{items.username}}
         </router-link>
       </div>
     <div class="about">{{items.about_me}}</div>
-      <el-button  id="button" type="primary" round size="mini">添加关注</el-button>
+      <el-button  v-if=" items.id != sharedState.user_id && !items.is_following" id="button" type="primary" round size="mini" @click="follow(items.id,items.username)">
+        添加关注
+      </el-button>
+      <el-button  v-else-if=" items.id != sharedState.user_id && items.is_following" id="button" type="danger" round size="mini" @click="unfollow(items.id,items.username)">
+        取消关注
+      </el-button>
     </div>
     <el-pagination
       @current-change="handleCurrentChange"
@@ -51,12 +56,53 @@ export default {
     handleSizeChange(val) {
     },
     handleCurrentChange(val) {                                    //改变页码
+      let iid=this.$route.params.id
       const path='user/getOnesFans/'+iid+'?page='+val    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)
           this.fans=response.data
         })
+    },
+    follow(id, name){
+      const path = '/user/follow/'+id
+      axios.get(path)
+        .then((response) => {
+          if(response.data === 'Success'){
+            this.$message({
+              type: 'success',
+              message: '已成功关注'+name+'!'
+            })
+            this.$router.push('followers')
+          }
+          else{
+            this.$message.error('关注失败！')
+          }
+        })
+        .catch((error) => {
+
+          console.error(error)
+
+        });
+    },
+    unfollow(id, name){
+      const path = '/user/unfollow/'+id
+      axios.get(path)
+        .then((response) => {
+          if(response.data === 'Success')
+            this.$message({
+              type: 'success',
+              message: '已取消关注'+name+'!'
+            })
+          else{
+            this.$message.error('取消关注失败！')
+          }
+        })
+        .catch((error) => {
+
+          console.error(error)
+
+        });
     }
 
   },
@@ -71,6 +117,7 @@ export default {
   height: 80px;
   border: 1px solid gainsboro;
   border-radius: 5px;
+  margin: 5px;
 }
   .ava{
     height: 40px;
