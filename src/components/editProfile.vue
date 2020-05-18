@@ -81,7 +81,6 @@ import store from '../store.js'
     },
     created () {   //页面渲染后自动执行
       const user_id = this.sharedState.user_id
-      console.log('create')
       this.getUser(user_id)
     }
   }

@@ -5,7 +5,7 @@
     <div class="summary"><span>{{this.post.summary}}</span></div>
     <div class="function">
       <div>
-        <router-link v-bind:to="{name:'profile',params:{id:this.post.author.id}}">{{this.post.author.username}}</router-link>
+        <router-link v-bind:to="{name:'hisPosts',params:{id:post.author.id}}">{{this.post.author.username}}</router-link>
       </div>
       <div class="buttons" v-if="post.author && post.author.id == sharedState.user_id">
         <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del"></el-button>

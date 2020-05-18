@@ -1,7 +1,10 @@
 <template>
   <div  v-if="posts" >
+    <div class="total">
+      <span class="el-icon-document">共{{this.totalItems}}篇文章</span>
+    </div>
    <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
-      <router-link v-bind:to="{name:'profile',params:{id:items.author.id}}">
+      <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
         <img v-bind:src="items.author._links.avatar" class="post_ava">
       </router-link>
       <div class="post_top">
@@ -31,7 +34,7 @@
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
       :current-page=this.posts._meta.page
-      :page-size="10"
+      :page-size="5"
       layout="total,prev, pager, next, jumper"
       :total="this.posts._meta.total_items">
     </el-pagination>
@@ -75,6 +78,7 @@ export default {
     handleSizeChange(val) {
     },
     handleCurrentChange(val) {                                    //改变页码
+      let iid=this.$route.params.id
       const path='post/getOnesPosts/'+iid+'?page='+val    //在url中添加参数
       axios.get(path)
         .then((response)=>{
@@ -96,7 +100,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-              this.$router.go(0);
+             this.getPosts()
               //this.$router.push('/').catch(err => {console.log(err)})
               //location.reload()
             }
@@ -118,12 +122,20 @@ export default {
    },
   beforeRouteUpdate (to, from, next) {
     next()
+    this.getPosts()
 
   }
 }
 </script>
 
 <style scoped>
+  .total{
+    padding: 5px;
+    text-align: left;
+    color: #bebebe;
+    font-size: smaller;
+    margin-bottom: 20px;
+  }
   .post_item{
     border: #bebebe solid 1px;
     border-radius: 5px;

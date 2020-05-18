@@ -1,7 +1,10 @@
 <template>
   <div  v-if="fans" >
+    <div class="total">
+      <span class="el-icon-user">共{{this.totalItems}}位粉丝</span>
+    </div>
     <div v-for="(items, index) in fans.items"  v-bind:key="index" class="wrap">
-      <router-link v-bind:to="{name:'profile',params:{id:items.id}}">
+      <router-link v-bind:to="{name:'hisPosts',params:{id:items.id}}">
         <img v-bind:src="items._links.avatar" class="ava">
       </router-link>
       <div class="top">
@@ -21,7 +24,7 @@
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
       :current-page=this.fans._meta.page
-      :page-size="10"
+      :page-size="5"
       layout="total,prev, pager, next, jumper"
       :total="this.fans._meta.total_items">
     </el-pagination>
@@ -73,7 +76,7 @@ export default {
               type: 'success',
               message: '已成功关注'+name+'!'
             })
-            this.$router.push('followers')
+            this.getFans()                       //关注后刷新生成新的粉丝列表
           }
           else{
             this.$message.error('关注失败！')
@@ -89,11 +92,13 @@ export default {
       const path = '/user/unfollow/'+id
       axios.get(path)
         .then((response) => {
-          if(response.data === 'Success')
+          if(response.data === 'Success') {
             this.$message({
               type: 'success',
-              message: '已取消关注'+name+'!'
+              message: '已取消关注' + name + '!'
             })
+            this.getFans()
+          }
           else{
             this.$message.error('取消关注失败！')
           }
@@ -113,6 +118,13 @@ export default {
 </script>
 
 <style scoped>
+  .total{
+    padding: 5px;
+    text-align: left;
+    color: #bebebe;
+    font-size: smaller;
+    margin-bottom: 20px;
+  }
 .wrap{
   height: 80px;
   border: 1px solid gainsboro;

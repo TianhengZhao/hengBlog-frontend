@@ -21,13 +21,13 @@
       <div class="wrap">
       <ul id="menu">
         <li >
-          <router-link v-bind:to="{ name: 'hisPosts' }" v-bind:active-class="'active'" class="nav-link">TA的文章</router-link>
+          <router-link v-bind:to="{ name: 'hisPosts' }"  class="nav-link" >TA的文章</router-link>
         </li>
         <li >
-          <router-link v-bind:to="{ name: 'followers' }" v-bind:active-class="'active'" class="nav-link">TA的粉丝</router-link>
+          <router-link v-bind:to="{ name: 'followers' }" class="nav-link">TA的粉丝</router-link>
         </li>
         <li>
-          <router-link v-bind:to="{ name: 'following' }" v-bind:active-class="'active'" class="nav-link">TA的关注</router-link>
+          <router-link v-bind:to="{ name: 'following' }"  class="nav-link">TA的关注</router-link>
         </li>
       </ul>
       <router-view class="route"></router-view>
@@ -48,19 +48,7 @@ import followers from '@/components/user/followers'
       return {
         sharedState: store.state,
         tabPosition: 'top',
-        user: {
-          id: '',
-          username: '',
-          email: '',
-          about_me: '',
-          reg_since: '',
-          sex: '',
-          is_following:'',
-          _links: {
-            self: '',
-            avatar: ''
-          }
-        }
+        user: ''
       }
         },
         methods: {
@@ -85,11 +73,13 @@ import followers from '@/components/user/followers'
             const path = '/user/follow/'+id
             axios.get(path)
               .then((response) => {
-                if(response.data === 'Success')
+                if(response.data === 'Success') {
                   this.$message({
                     type: 'success',
-                    message: '已成功关注'+name+'!'
+                    message: '已成功关注' + name + '!'
                   })
+                  this.getUser(id)
+                }
                 else{
                   this.$message.error('关注失败！')
                 }
@@ -104,11 +94,13 @@ import followers from '@/components/user/followers'
             const path = '/user/unfollow/'+id
             axios.get(path)
               .then((response) => {
-                if(response.data === 'Success')
+                if(response.data === 'Success') {
                   this.$message({
                     type: 'success',
-                    message: '已取消关注'+name+'!'
+                    message: '已取消关注' + name + '!'
                   })
+                  this.getUser(id)
+                }
                 else{
                   this.$message.error('取消关注失败！')
                 }
@@ -213,7 +205,7 @@ import followers from '@/components/user/followers'
   .route{
     float: left;
     margin-left: 30px;
-    margin-top: 20px;
+    margin-top: 5px;
     width: 100%;
   }
 
