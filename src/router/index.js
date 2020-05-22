@@ -51,7 +51,7 @@ const router=new Router({
         { path: 'following', name: 'following', component: following },  //         对应/:id/following
       ],
       meta: {
-        requiresAuth: true                   //干嘛的？？？
+        requiresAuth: true                   //在进入页面前判断是否登录
       }
 
     },
@@ -63,7 +63,10 @@ const router=new Router({
     {
       path: '/user/editProfile',
       name: 'editProfile',
-      component: editProfile
+      component: editProfile,
+      meta: {
+        requiresAuth: true                   //在进入页面前判断是否登录
+      }
     },
     {
       path: '/post/:id',

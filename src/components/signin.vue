@@ -22,6 +22,7 @@
 <script>/* eslint-disable */
 import axios from 'axios'
 import store from '../store.js'
+import router from '../router'
   export default {
     name: 'signin',
     data(){
@@ -98,7 +99,7 @@ import store from '../store.js'
                     type: 'success'
                   });
                   store.setNewAction();    //注册成功后，修改store中状态，为什么此处要把is_new更新为true？？？？
-                  this.$router.push("/");
+                  router.push("/");
                 }
                 else if(response.data === 'Wrong Name'){
                   this.$message.error('该用户名已使用！');
@@ -117,7 +118,7 @@ import store from '../store.js'
         });
       },
       back(){
-        this.$router.push("/").catch(err => {err})
+        router.push("/").catch(err => {err})
             //返回到登录页面
       }
     }

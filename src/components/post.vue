@@ -1,5 +1,5 @@
 <template>
-  <!--------------------------主界面--------------------------->
+  <!-------------------------------------------------展示文章------------------------------------------------->
   <div class="container">
     <div class="title"><h3 class="el-icon-tickets">{{this.post.title}}</h3></div>
     <div class="summary"><span>{{this.post.summary}}</span></div>
@@ -11,20 +11,53 @@
         <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del"></el-button>
       </div>
       <div class="info">
-        <i id="time">{{ $moment(post.timestamp).format('LLL') }}</i>
+        <i id="time" class="el-icon-time">{{ $moment(post.timestamp).format('YYYY/MM/DD H:mm') }}</i>
         <el-divider direction="vertical"></el-divider>
         <i class="el-icon-view" >{{post.views}}</i>
       </div>
     </div>
    <el-divider></el-divider>
-    <div>
+    <div class="body">
     <vue-markdown
       :source="this.post.body"
       :toc-first-level="1"
       :toc-last-level="3"
-      class="body"
      >
     </vue-markdown>
+    </div>
+    <!-------------------------------------------------显示评论------------------------------------------------->
+    <div class="divide">
+    <el-divider><i class="el-icon-chat-line-round">评论区</i></el-divider>
+      <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm">
+       <el-form-item prop="body">
+         <el-input type="textarea" v-model="contentForm.body" placehoder="内容" id="com_content"></el-input>
+       </el-form-item>
+        <el-button type="primary"  class="but" size="small">评 论</el-button>
+      </el-form>
+      <el-alert v-else
+        type="warning"
+        description="登录后方可发表评论！"
+        show-icon>
+      </el-alert>
+      <div v-if="comments" id="panel">
+        <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_item">
+          <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
+            <img v-bind:src="items.author._links.avatar" class="comment_ava">
+          </router-link>
+          <div class="comment_top">
+            <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}" class="comment_title">
+              {{items.author.username}}
+            </router-link>
+          </div>
+          <div class="comment_body">
+            <vue-markdown
+              class="comment_summary"
+              :source="items.body"
+            >
+            </vue-markdown>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -32,20 +65,38 @@
 <script>/* eslint-disable */
 import axios from 'axios'
 import store from '../store'
-import VueMarkdown from 'vue-markdown'
+import '../assets/bootstrap-markdown/js/bootstrap-markdown.js'
+import '../assets/bootstrap-markdown/js/bootstrap-markdown.zh.js'
+import '../assets/bootstrap-markdown/js/marked.js'
+import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
+
   export default {
     name: 'post',
     components:{
       VueMarkdown
     },
     data(){
+      var checkBody = (rule, value, callback)=>{
+        if(value === '')
+          callback(new Error('内容不能为空'))
+        else if(value.length>255)
+          callback(new Error('摘要过长'))
+        callback()
+      }
       return{
         sharedState:store.state,
         post:"",
+        comments:'',
+        contentForm:{
+          body:''
+        },
         postForm:{
           title:'',
           summary:'',
           body:''
+        },
+        rules:{
+          body:[{validator:checkBody,trigger:'blur'}]
         }
       }
     },
@@ -77,11 +128,27 @@ import VueMarkdown from 'vue-markdown'
               else  this.$router.push(this.$route.query.redirect)
             })
         })
-        }
+        },
+      getComments(){
+        let postId = this.$route.params.id
+        axios.get('comment/getComments/'+postId)
+          .then((response)=>{
+            console.log(response.data)
+            this.comments=response.data
+          })
+      }
     },
     created () {
       this.getPost()
-
+    //  this.getComments()
+      $(document).ready(function() {
+        $("#com_content").markdown({
+          autofocus:false,
+          savable:false,
+          iconlibrary: 'fa',  // 使用Font Awesome图标
+          language: 'zh'
+        })
+      })
     }
 
   }
@@ -105,8 +172,14 @@ import VueMarkdown from 'vue-markdown'
     font-style: oblique;
   }
   .body{
-    float: left;
+
     width: 100%;
+    text-align: left;
+  }
+  .body:after{
+    content: "";
+    display: table;
+    clear: both;
   }
   .buttons{
     float: left;
@@ -119,5 +192,41 @@ import VueMarkdown from 'vue-markdown'
   }
   .function{
     height: 40px;
+  }
+  .divide{
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  .comment_item{
+    border: #bebebe solid 1px;
+    border-radius: 5px;
+    height: 150px;
+    margin: 5px;
+  }
+  .comment_ava{
+    height: 50px;
+    width: 50px;
+    margin: 20px;
+    float: left;
+    display: inline;
+  }
+  .comment_top{
+    margin-top: 20px;
+    margin-right: 5px;
+    height: 30px;
+  }
+  .comment_title{
+    float: left;
+    font-size: large;
+  }
+  .comment_body{
+    padding-left: 90px;
+    height: 64px;
+  }
+  .comment_summary{
+    float: left;
+    font-size: small;
+    height: 24px;
+    text-align: left;
   }
 </style>

@@ -9,7 +9,7 @@
       <li v-if="this.user.sex === null" class="info2"><h6>性别: - </h6></li>
       <li v-else-if="this.user.sex === '1'" class="info2"><h6>性别: 男 </h6></li>
       <li v-else class="info2"><h6>性别: 女 </h6></li>
-      <li class="info2"><h6>注册时间:{{$moment(user.reg_since).format('LLL') }}</h6></li>   <!--格式化 UTC 时间为本地时间-->
+      <li class="info2"><h6>注册时间:{{$moment(user.reg_since).format('YYYY/MM/DD H:mm') }}</h6></li>   <!--格式化 UTC 时间为本地时间-->
       <li v-if="this.user.about_me === null" class="info2"><h6>简介: - </h6></li>
       <li v-else class="info2"><h6>简介:{{this.user.about_me}}</h6></li>
       </ul>

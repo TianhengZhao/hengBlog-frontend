@@ -12,6 +12,7 @@
       </el-form-item>
       <el-button type="primary"  @click="submit(postForm)" class="but">发 表</el-button>
     </el-form>
+    <el-divider class="divide"><i class="el-icon-document">所有文章</i></el-divider>
     <div v-if="posts" id="panel">                   <!--getPosts()加载完成后才显示，因为用到了posts数据-->
       <div v-for="(items, index) in posts.items"  v-bind:key="index" class="post_item">
          <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
@@ -35,7 +36,7 @@
           <el-button size="mini"  icon="el-icon-delete" circle type="danger" @click="del(items.id)"></el-button>
         </div>
           <div class="info">
-          <i id="time">{{ $moment(items.timestamp).format('LLL') }}</i>
+          <i id="time" class="el-icon-time">{{ $moment(items.timestamp).format('YYYY/MM/DD H:mm') }}</i>
           <el-divider direction="vertical"></el-divider>
           <i class="el-icon-view" >{{items.views}}</i>
           </div>
@@ -65,7 +66,7 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
 export default {
   name: 'home',
   components:{
-    VueMarkdown                           //什么意思？？？？
+    VueMarkdown
   },
   data() {
     var checkTitle = (rule,value,callback)=>{
@@ -156,12 +157,16 @@ export default {
       if (typeof this.$route.query.per_page != 'undefined') {
         per_page = this.$route.query.per_page
       }
-      const path='post/getPosts?page=${page}&per_page=${per_page}'    //在url中添加参数
+      const path='post/getPosts?page='+page+'&per_page='+per_page    //在url中添加参数
       axios.get(path)
         .then((response)=>{
           console.log(response.data)
           this.posts=response.data
           this.totalItems=this.posts._meta.total_items
+        })
+        .catch((error) => {
+          // handle error
+
         })
 
     },
@@ -218,6 +223,10 @@ export default {
   #panel{
     margin-top:20px;
     margin-bottom: 20px;
+  }
+  .divide{
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
   .post_item{
     border: #bebebe solid 1px;

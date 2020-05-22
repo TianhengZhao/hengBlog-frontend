@@ -59,21 +59,19 @@ import store from '../store'
         // 数据校验
         this.$refs.form.validate((valid) => {
           if (valid) {
-            axios.post('/auth/loginData', {   //localhost换成ip呢？？？？
-               username: this.form.username,
-               password: this.form.password,
-               rem:this.form.rem
-             })
+            axios.post('/auth/loginData',  {
+                'username': this.form.username,
+                'password': this.form.password
+            })
                .then((response) => {
                  console.log(response)
-                 if (response.data !== 'Wrong') {
+                 if (response.data != false) {
                    store.resetNotNewAction();  //登录成功后，修改store中状态，为什么此处把is_new变成false？？？？
                    window.localStorage.setItem('token',response.data );   //存入token值
                    store.loginAction();        //is_authenticated变为true
                    this.$router.push("/");
-
                  }
-                 else if(response.data === 'Wrong'){
+                 else if(response.data === false){
                    this.$message.error('用户名或密码错误！');
                  }
 

@@ -24,7 +24,7 @@
           <el-button size="mini"  icon="el-icon-delete" circle type="danger" @click="del(items.id)"></el-button>
         </div>
         <div class="info">
-          <i id="time">{{ $moment(items.timestamp).format('LLL') }}</i>
+          <i id="time" class="el-icon-time">{{ $moment(items.timestamp).format('YYYY/MM/DD H:mm') }}</i>
           <el-divider direction="vertical"></el-divider>
           <i class="el-icon-view" >{{items.views}}</i>
         </div>

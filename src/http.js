@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 import router from './router'
 import store from './store'
@@ -23,27 +24,35 @@ axios.interceptors.response.use(function (response) {
   // Do something with response data
   return response
 }, function (error) {
-  // Do something with response error
-  switch (error.response.status) {
-    case 401: // JWT过期
-      // 清除 Token 及 已认证 等状态
-      store.logoutAction()
-      // 跳转到登录页
-      if (router.currentRoute.path !== '/login') {
-        this.$message.error('401: 认证已失效，请先登录')
-        router.replace({
-          path: '/login',
-          query: { redirect: router.currentRoute.path }
-        })
-      }
-      break
+  if (typeof error.response === 'undefined') {
+    this.$message.error('无法连接Flask API，请联系管理员')
+  } else {
+    // Do something with response error
+    switch (error.response.status) {
+      case 401:
+        // 清除 Token 及 已认证 等状态
+        store.logoutAction()
+        router.push('/login')
+        /*
+        if (router.currentRoute.path !== '/login') {
+          Vue.toasted.error('401: 认证已失效，请先登录', { icon: 'fingerprint' })
+          router.replace({
+            path: '/login',
+            query: { redirect: router.currentRoute.path }
+          })
+        }*/
+        break
 
-    case 404:
-      this.$message.error('404: NOT FOUND')
-      router.back()
-      break
+      case 403:
+        this.$message.error('403: Forbidden')
+        router.back()
+        break
+
+      case 404:
+        this.$message.error('404')
+        break
+    }
   }
   return Promise.reject(error)
 })
-
 export default axios
