@@ -114,7 +114,7 @@ export default {
                 })
                   .then((response)=>{
                     console.log(response)
-                    if (response.data === 'Success') {
+                    if (response.status === 201) {
                       this.$message({             //message消息提示
                         message: '发表成功！',
                         type: 'success'
@@ -269,12 +269,13 @@ export default {
     float: left;
     margin-left: 90px;
   }
-  .info{
+  .info {
     float: right;
     font-size: smaller;
     color: #bebebe;
     margin-right: 5px;
     display: inline;
   }
+
 </style>
 

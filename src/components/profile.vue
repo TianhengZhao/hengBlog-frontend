@@ -1,8 +1,8 @@
 <template>
-  <el-container class="containe" >
+  <el-container class="containe" v-if="user">
     <el-aside  class="aside">
       <div class="info1">
-        <div class="ava"><img :src='this.user._links.avatar'/></div>
+        <div class="ava"><img :src='user._links.avatar'/></div>
         <div class="ava" ><h2>{{this.user.username}}</h2></div>
       </div>
       <ul id="list">

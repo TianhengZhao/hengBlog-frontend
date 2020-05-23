@@ -93,7 +93,7 @@ import router from '../router'
             })
               .then((response) => {
                 console.log(response)
-                if (response.data === 'Success') {
+                if (response.status === 201) {
                   this.$message({             //message消息提示
                     message: '恭喜你，注册成功！',
                     type: 'success'
