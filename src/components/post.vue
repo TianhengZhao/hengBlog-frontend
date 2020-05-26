@@ -28,9 +28,10 @@
     <!-------------------------------------------------显示评论------------------------------------------------->
     <div class="divide">
     <el-divider><i class="el-icon-chat-line-round">评论区</i></el-divider>
-      <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm" id="addComment">
+      <!-----评论------>
+      <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm" >
        <el-form-item prop="body">
-         <el-input type="textarea" v-model="contentForm.body" id="com_content"></el-input>
+         <el-input type="textarea" v-model="contentForm.body" class="com_content"></el-input>
        </el-form-item>
         <el-button type="primary"  class="but" size="mini" @click="submit(contentForm)">评 论</el-button>
       </el-form>
@@ -39,6 +40,7 @@
         description="登录后方可发表评论！"
         show-icon>
       </el-alert>
+      <!-----------------------------------------一级评论--------------------------------------------->
       <div v-if="comments" id="panel">
         <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_item">
           <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
@@ -52,16 +54,73 @@
           <div class="comment_time">
             <i style="font-style: normal">{{ $moment(items.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
           </div>
-          <div class="comment_body">
+          <div v-if="!items.disabled" class="comment_body">
             <vue-markdown
               class="comment_summary"
               :source="items.body"
             >
             </vue-markdown>
           </div>
-          <div class="comment_info">
-            <el-button v-if='items.author.id === sharedState.user_id || post.author.id === sharedState.user_id' type="text" class="info_but el-icon-delete-solid" @click="del_com(items.id)">删除</el-button>
-            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment" id="reply">回复</el-button>
+          <div v-else class="comment_disable"><el-alert
+            title="该内容已被屏蔽"
+            type="error"
+            :closable="false">
+          </el-alert></div>
+          <div v-if="!items.disabled" class="comment_info">
+            <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
+                       class="info_but el-icon-s-release" @click="disableOrEnable_com(items.id, items.disabled)">屏蔽</el-button>
+            <el-button v-if='items.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
+                       type="text" class="info_but el-icon-delete-solid" @click="del_com(items.id)">删除</el-button>
+            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply">回复</el-button>
+            <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':items.likers_id.indexOf(sharedState.user_id)!=-1}"
+                       class="info_but el-icon-star-off" @click="like_unlike_com(items)">{{items.likers_id.length}}</el-button>  <!--length的使用-->
+          </div>
+          <div v-else class="comment_info">
+            <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
+                       class="info_but el-icon-document-remove" @click="disableOrEnable_com(items.id, items.disabled)">取消屏蔽</el-button>
+          </div>
+          <!---------------------------------子孙评论-------------------------->
+          <div v-if="items.descendants !== null ">
+            <div v-for="(des_com, index) in items.descendants"  v-bind:key="index" class="des_item">
+          <!----------------------------------复制开始-------------------------------------------------------------------------->
+          <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
+            <img v-bind:src="des_com.author._links.avatar" class="comment_ava">
+          </router-link>
+          <div class="comment_top">
+            <router-link v-bind:to="{name:'hisPosts',params:{id:des_com.author.id}}" class="comment_title">
+              {{des_com.author.username}}
+            </router-link>
+          </div>
+          <div class="comment_time">
+            <i style="font-style: normal">{{ $moment(des_com.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
+          </div>
+          <div v-if="!des_com.disabled" class="comment_body">
+            <vue-markdown
+              class="comment_summary"
+              :source="des_com.body"
+            >
+            </vue-markdown>
+          </div>
+          <div v-else class="comment_disable"><el-alert
+            title="该内容已被屏蔽"
+            type="error"
+            :closable="false">
+          </el-alert></div>
+          <div v-if="!des_com.disabled" class="comment_info">
+            <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
+                       class="info_but el-icon-s-release" @click="disableOrEnable_com(des_com.id, des_com.disabled)">屏蔽</el-button>
+            <el-button v-if='des_com.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
+                       type="text" class="info_but el-icon-delete-solid" @click="del_com(des_com.id)">删除</el-button>
+            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply">回复</el-button>
+            <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':des_com.likers_id.indexOf(sharedState.user_id)!=-1}"
+                       class="info_but el-icon-star-off" @click="like_unlike_com(des_com)">{{des_com.likers_id.length}}</el-button>  <!--length的使用-->
+          </div>
+          <div v-else class="comment_info">
+            <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
+                       class="info_but el-icon-document-remove" @click="disableOrEnable_com(des_com.id, des_com.disabled)">取消屏蔽</el-button>
+          </div>
+          <!---------------------------------复制结束-------------------------->
+            </div>
           </div>
         </div>
         <el-pagination
@@ -84,6 +143,7 @@ import '../assets/bootstrap-markdown/js/bootstrap-markdown.js'
 import '../assets/bootstrap-markdown/js/bootstrap-markdown.zh.js'
 import '../assets/bootstrap-markdown/js/marked.js'
 import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
+import '../assets/jquery.sticky'
 
   export default {
     name: 'post',
@@ -102,6 +162,7 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
         sharedState:store.state,
         post:"",
         comments:'',
+        likes_count:'',
         contentForm:{
           body:''
         },
@@ -133,7 +194,7 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
             const path = 'post/getPost/' + this.post.id
             this.$axios.delete(path)
             .then((response)=> {
-              if(response.data == 'Success') {
+              if(response.data === 'Success') {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -161,7 +222,7 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
       submit(contentForm){
         this.$refs.contentForm.validate((valid) => {
           if (valid) {
-            axios.post('comment/add',{
+            axios.post('comment/comments',{
               article_id:this.$route.params.id,
               body:this.contentForm.body
             })
@@ -186,11 +247,41 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
       },
       handleCurrentChange(val) {                                    //改变页码
         let postId = this.$route.params.id
-        const path='comment/getComments/'+postId+'?page='+val    //在url中添加参数
+        const path='comment/comments/'+postId+'?page='+val    //在url中添加参数
         axios.get(path)
           .then((response)=>{
             console.log(response.data)
             this.comments=response.data
+          })
+      },
+      disableOrEnable_com(id, enabled){
+        const path = 'comment/comments/'+id+'/disableOrEnable'
+        axios.put(path,{
+          "disableOrEnable":!enabled
+        })
+          .then(response => {
+            if (response.data === 'Success') {
+              this.getComments();
+              console.log(response)
+            }
+          })
+          .catch(error => {
+            this.$message.error('操作失败！')
+          })
+      },
+      enable_com(id){
+        const path = 'comment/comments/'+id+'/disableOrEnable'
+        axios.put(path,{
+          "disableOrEnable":false
+        })
+          .then(response => {
+            if (response.data === 'Success') {
+              this.getComments();
+              console.log(response)
+            }
+          })
+          .catch(error => {
+            this.$message.error('取消屏蔽失败！')
           })
       },
       del_com(id){
@@ -199,7 +290,7 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          const path = 'comment/delete/' + id
+          const path = 'comment/comments/' + id
           this.$axios.delete(path)
             .then((response)=> {
               if(response.data === 'Success') {
@@ -212,24 +303,50 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
               else  this.$message.error('删除失败！')
             })
         })
-      }
+      },
+      like_unlike_com(comment){    // 参数为comment
+        let path=''                // 先定义path
+        if(comment.likers_id.indexOf(this.sharedState.user_id) !== -1) {  //点过赞，则取消点赞
+           path = 'comment/comments/' + comment.id + '/unlike'
+        }
+        else {                                                  // 未点过赞，点赞
+           path = 'comment/comments/' + comment.id + '/like'
+        }
+
+          axios.get(path)
+            .then(response => {
+              if (response.data === 'Success') {
+                this.getComments();
+                console.log(response)
+              }
+            })
+        .catch(error => {
+          this.$message.error('点赞失败！')
+        })
+        }
+
     },
     created () {
       this.getPost()
       this.getComments()
-      $(document).ready(function() {
-          $('#reply').on('click',function(){
-           
+      /*    $(document).ready(function() {
+          $(".comment_info").on('click',".reply",function(){
+        // $(".reply").click(function() {
+           // var $comment = $(this).closest('.comment_item');
+            console.log('hhh')
+            // 把评论框添加到要回复的评论下面
+           // $comment.after($('#addComment'));
+
         })
-      })
-        /* $(document).ready(function() {
-           $("#com_content").markdown({
+      })*/
+       $(document).ready(function() {
+           $(".com_content").markdown({
              autofocus:false,
              savable:false,
              iconlibrary: 'fa',  // 使用Font Awesome图标
              language: 'zh'
            })
-         })*/
+         })
     }
 
   }
@@ -293,6 +410,10 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
     float: left;
     display: inline;
   }
+  .comment_disable{
+    width: 80%;
+    margin:auto;
+  }
   .comment_top{
     margin-top: 15px;
     margin-right: 5px;
@@ -326,5 +447,11 @@ import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
   .info_but{
     font-size: smaller;
     color: #8c939d;
+  }
+  .info_but:hover{
+    color: #409eff;
+  }
+  .active_like{
+    color: #dd6161;
   }
 </style>
