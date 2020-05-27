@@ -28,8 +28,8 @@
     <!-------------------------------------------------显示评论------------------------------------------------->
     <div class="divide">
     <el-divider><i class="el-icon-chat-line-round">评论区</i></el-divider>
-      <!-----评论------>
-      <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm" >
+      <!-----------------------进行一级评论------------------------------->
+      <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm">
        <el-form-item prop="body">
          <el-input type="textarea" v-model="contentForm.body" class="com_content"></el-input>
        </el-form-item>
@@ -40,9 +40,18 @@
         description="登录后方可发表评论！"
         show-icon>
       </el-alert>
-      <!-----------------------------------------一级评论--------------------------------------------->
+      <!-----------------------进行子评论------------------------------->
+      <el-form  :model="descontentForm" :rules="rules" ref="descontentForm" id="addComment" class="display_none">
+        <el-form-item prop="body">
+          <el-input type="textarea" v-model="descontentForm.body" class="des_content"></el-input>
+        </el-form-item>
+        <el-button type="primary"  class="but" size="mini" @click="submit_des(descontentForm)">评 论</el-button>
+        <el-button class="but" size="mini" @click="cancle_com">取 消</el-button>
+      </el-form>
+      <!-----------------------------------------显示一级评论--------------------------------------------->
       <div v-if="comments" id="panel">
-        <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_item">
+        <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_container"> <!--一级评论＋子评论容器-->
+          <div class="comment_item">
           <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
             <img v-bind:src="items.author._links.avatar" class="comment_ava">
           </router-link>
@@ -71,7 +80,7 @@
                        class="info_but el-icon-s-release" @click="disableOrEnable_com(items.id, items.disabled)">屏蔽</el-button>
             <el-button v-if='items.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
                        type="text" class="info_but el-icon-delete-solid" @click="del_com(items.id)">删除</el-button>
-            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply">回复</el-button>
+            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply" @click="add_des_com(items.id)">回复</el-button>
             <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':items.likers_id.indexOf(sharedState.user_id)!=-1}"
                        class="info_but el-icon-star-off" @click="like_unlike_com(items)">{{items.likers_id.length}}</el-button>  <!--length的使用-->
           </div>
@@ -79,10 +88,8 @@
             <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
                        class="info_but el-icon-document-remove" @click="disableOrEnable_com(items.id, items.disabled)">取消屏蔽</el-button>
           </div>
-          <!---------------------------------子孙评论-------------------------->
-          <div v-if="items.descendants !== null ">
-            <div v-for="(des_com, index) in items.descendants"  v-bind:key="index" class="des_item">
-          <!----------------------------------复制开始-------------------------------------------------------------------------->
+          <!-----------------------------------------------------显示子评论----------------------------------------------->
+            <div v-if="items.descendants" v-for="(des_com, dindex) in items.descendants"  v-bind:key="dindex" class="des_item">
           <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
             <img v-bind:src="des_com.author._links.avatar" class="comment_ava">
           </router-link>
@@ -95,6 +102,9 @@
             <i style="font-style: normal">{{ $moment(des_com.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
           </div>
           <div v-if="!des_com.disabled" class="comment_body">
+            <router-link v-bind:to="{name:'hisPosts',params:{id:des_com.parent.author.id}}" class="comment_summary">
+              @{{des_com.parent.author.username}} :
+            </router-link>
             <vue-markdown
               class="comment_summary"
               :source="des_com.body"
@@ -111,7 +121,7 @@
                        class="info_but el-icon-s-release" @click="disableOrEnable_com(des_com.id, des_com.disabled)">屏蔽</el-button>
             <el-button v-if='des_com.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
                        type="text" class="info_but el-icon-delete-solid" @click="del_com(des_com.id)">删除</el-button>
-            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply">回复</el-button>
+            <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply child" @click="add_des_com(des_com.id)">回复</el-button>
             <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':des_com.likers_id.indexOf(sharedState.user_id)!=-1}"
                        class="info_but el-icon-star-off" @click="like_unlike_com(des_com)">{{des_com.likers_id.length}}</el-button>  <!--length的使用-->
           </div>
@@ -119,9 +129,8 @@
             <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
                        class="info_but el-icon-document-remove" @click="disableOrEnable_com(des_com.id, des_com.disabled)">取消屏蔽</el-button>
           </div>
-          <!---------------------------------复制结束-------------------------->
             </div>
-          </div>
+        </div>
         </div>
         <el-pagination
           @current-change="handleCurrentChange"
@@ -153,7 +162,7 @@ import '../assets/jquery.sticky'
     data(){
       var checkBody = (rule, value, callback)=>{
         if(value === '')
-          callback(new Error('内容不能为空'))
+          callback(new Error('评论不能为空'))
         else if(value.length>120)
           callback(new Error('评论过长'))
         else callback()
@@ -166,6 +175,10 @@ import '../assets/jquery.sticky'
         contentForm:{
           body:''
         },
+        descontentForm:{
+          parentId:0,
+          body:''
+        },
         postForm:{
           title:'',
           summary:'',
@@ -173,6 +186,7 @@ import '../assets/jquery.sticky'
         },
         rules:{
           body:[{validator:checkBody,trigger:'blur'}]
+
         }
       }
     },
@@ -221,12 +235,13 @@ import '../assets/jquery.sticky'
       },
       submit(contentForm){
         this.$refs.contentForm.validate((valid) => {
-          if (valid) {
-            axios.post('comment/comments',{
-              article_id:this.$route.params.id,
-              body:this.contentForm.body
+          if (valid) {                        // 一级评论
+              axios.post('comment/comments',{
+              'article_id':this.$route.params.id,
+              'body':this.contentForm.body,
+                'parentId':''
             })
-              .then((response)=>{
+            .then((response)=>{
                 console.log(response)
                 if (response.status === 201) {
                   this.$message({             //message消息提示
@@ -243,11 +258,48 @@ import '../assets/jquery.sticky'
           }
         })
       },
+      submit_des(descontentForm){
+        this.$refs.descontentForm.validate((valid) => {
+          if (valid) {                                           // 子评论
+            axios.post('comment/comments',{
+              'article_id':this.$route.params.id,
+              'body':descontentForm.body,
+              'parentId':descontentForm.parentId
+            })
+              .then((response)=>{
+                console.log(response)
+                if (response.status === 201) {
+                  this.$message({             //message消息提示
+                    message: '评论成功！',
+                    type: 'success'
+                  });
+                  this.getComments()
+                  this.descontentForm.body=''
+                  this.descontentForm.parentId=0
+                  $('#addComment').addClass('display_none')
+                }
+              })
+              .catch((error) => {
+                this.$message.error('评论失败！');
+              });
+          }
+        })
+
+      },
+      cancle_com(){
+        this.descontentForm.body=''
+        this.descontentForm.parentId=0
+        $('#addComment').addClass('display_none')
+      },
+      add_des_com(id){
+        this.descontentForm.parentId = id
+        console.log(this.descontentForm)
+      },
       handleSizeChange(val) {
       },
       handleCurrentChange(val) {                                    //改变页码
         let postId = this.$route.params.id
-        const path='comment/comments/'+postId+'?page='+val    //在url中添加参数
+        const path='post/getComments/'+postId+'?page='+val    //在url中添加参数
         axios.get(path)
           .then((response)=>{
             console.log(response.data)
@@ -299,6 +351,9 @@ import '../assets/jquery.sticky'
                   message: '删除成功!'
                 })
                 this.getComments()
+                $('#addComment').addClass('display_none')
+                this.descontentForm.body=''
+                this.descontentForm.parentId=0
               }
               else  this.$message.error('删除失败！')
             })
@@ -329,24 +384,21 @@ import '../assets/jquery.sticky'
     created () {
       this.getPost()
       this.getComments()
-      /*    $(document).ready(function() {
-          $(".comment_info").on('click',".reply",function(){
-        // $(".reply").click(function() {
-           // var $comment = $(this).closest('.comment_item');
-            console.log('hhh')
-            // 把评论框添加到要回复的评论下面
-           // $comment.after($('#addComment'));
+      $(document).ready(function () {
+        $("body").on('click', ".reply", function () {            // 为什么？？？ 为什么body？？？？
+          var $comment = $(this).closest('.comment_item');
+          if($comment.hasClass('child')) {
+            $('#addComment').addClass('alt_width')
+            this.descontentForm.body=''
+            this.descontentForm.parentId=0
+          }
+          console.log($comment)
+          $('#addComment').removeClass('display_none')
+          $comment.after($('#addComment'));
+
 
         })
-      })*/
-       $(document).ready(function() {
-           $(".com_content").markdown({
-             autofocus:false,
-             savable:false,
-             iconlibrary: 'fa',  // 使用Font Awesome图标
-             language: 'zh'
-           })
-         })
+      })
     }
 
   }
@@ -398,6 +450,11 @@ import '../assets/jquery.sticky'
   .but{
     margin-bottom: 15px;
   }
+  .comment_container:after{
+    content: "";
+    display: table;
+    clear: both;
+  }
   .comment_item{
     border: #eeeeee dashed 1px;
     height: 150px;
@@ -413,6 +470,7 @@ import '../assets/jquery.sticky'
   .comment_disable{
     width: 80%;
     margin:auto;
+    height: 60px;
   }
   .comment_top{
     margin-top: 15px;
@@ -433,6 +491,7 @@ import '../assets/jquery.sticky'
     padding-left: 66px;
     height: 60px;
   }
+
   .comment_summary{
     float: left;
     font-size: small;
@@ -454,4 +513,24 @@ import '../assets/jquery.sticky'
   .active_like{
     color: #dd6161;
   }
+  .des_item{
+    margin-top: 5px;
+    width: 90%;
+    float: right;
+    border: #eeeeee dashed 1px;
+
+  }
+  .des_item:after{
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .display_none{
+    display: none;
+  }
+  .alt_width{
+    width: 90%;
+    float: right;
+  }
+
 </style>
