@@ -1,10 +1,10 @@
 <template>
   <el-menu  :default-active="$route.path" mode="horizontal" router>    <!--router使得index成为导航路由-->
-    <el-menu-item index="/">我的博客</el-menu-item>
+    <el-menu-item index="/" class="el-icon-s-home">我的博客</el-menu-item>
     <el-submenu index="2" v-if="sharedState.is_authenticated" class="setting">
       <template slot="title" >{{sharedState.user_name}}</template>
-      <el-menu-item :index="'/'+sharedState.user_id">我的主页</el-menu-item>   <!--动态设置路由-->
-      <el-menu-item index="2-2">修改信息</el-menu-item>
+      <el-menu-item :index="'/user/'+sharedState.user_id" >我的主页</el-menu-item>   <!--动态设置路由-->
+      <el-menu-item index="/notifications">消息通知</el-menu-item>
       <el-menu-item index="2-3" @click="logout">退出登录</el-menu-item>
     </el-submenu>
     <el-menu-item v-else class="setting" index="/login">登录</el-menu-item>

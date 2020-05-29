@@ -239,7 +239,7 @@ import '../assets/jquery.sticky'
               axios.post('comment/comments',{
               'article_id':this.$route.params.id,
               'body':this.contentForm.body,
-                'parentId':''
+                'parentId':0
             })
             .then((response)=>{
                 console.log(response)

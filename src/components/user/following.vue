@@ -24,7 +24,7 @@
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
       :current-page=this.ideal._meta.page
-      :page-size="5"
+      :page-size="4"
       layout="total,prev, pager, next, jumper"
       :total="this.ideal._meta.total_items">
     </el-pagination>

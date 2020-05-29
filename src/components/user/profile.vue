@@ -37,7 +37,7 @@
 </template>
 
 <script>/* eslint-disable */
-import store from '../store'
+import store from '../../store'
 import axios from 'axios'
 import hisPosts from '@/components/user/hisPosts'
 import followers from '@/components/user/followers'

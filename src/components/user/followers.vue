@@ -24,7 +24,7 @@
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
       :current-page=this.fans._meta.page
-      :page-size="5"
+      :page-size="4"
       layout="total,prev, pager, next, jumper"
       :total="this.fans._meta.total_items">
     </el-pagination>

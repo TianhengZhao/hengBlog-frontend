@@ -4,13 +4,17 @@ import login from '@/components/login'
 import signin from '@/components/signin'
 import navbar from '@/components/navbar'
 import home from '@/components/home'
-import profile from '@/components/profile'
-import NotFound from '@/components/NotFound'
-import editProfile from '@/components/editProfile'
+import profile from '@/components/user/profile'
+import editProfile from '@/components/user/editProfile'
 import post from '@/components/post'
 import hisPosts from '@/components/user/hisPosts'
 import followers from '@/components/user/followers'
 import following from '@/components/user/following'
+import notifications from '../components/notification/notifications'
+import receivedComments from '../components/notification/receivedComments'
+import receivedFollowers from '../components/notification/receivedFollowers'
+import receivedLikes from '../components/notification/receivedLikes'
+import receivedMessages from '../components/notification/receivedMessages'
 Vue.use(Router)
 /* eslint-disable */
 const router=new Router({
@@ -41,24 +45,19 @@ const router=new Router({
       component: navbar,
     },
     {
-      path: '/:id',
+      path: '/user/:id',
       //name: 'profile',
       component: profile,    // 在profile的<router-view>中使用
       children:[
         { path: '', component: hisPosts },      // 默认子路由，父路由不能指定 name
-        { path: 'hisPosts', name: 'hisPosts', component: hisPosts },     //         对应/:id
-        { path: 'followers', name: 'followers', component: followers },  //         对应/:id/followers
-        { path: 'following', name: 'following', component: following },  //         对应/:id/following
+        { path: 'hisPosts', name: 'hisPosts', component: hisPosts },     //         对应/user/:id
+        { path: 'followers', name: 'followers', component: followers },  //         对应/user/:id/followers
+        { path: 'following', name: 'following', component: following }  //         对应/user/:id/following
       ],
       meta: {
         requiresAuth: true                   //在进入页面前判断是否登录
       }
 
-    },
-    {
-      path: '/NotFound',
-      name: 'NotFound',
-      component: NotFound
     },
     {
       path: '/user/editProfile',
@@ -72,6 +71,20 @@ const router=new Router({
       path: '/post/:id',
       name: 'post',
       component: post
+    },
+    {
+      path: '/notifications',
+      component: notifications,    // 在<router-view>中使用
+      children:[
+        { path: '', component: receivedComments }, //         对应/notifications
+        { path: 'receivedComments', name: 'receivedComments', component: receivedComments }, // 对应/notifications/receivedComments
+        { path: 'receivedFollowers', name: 'receivedFollowers', component: receivedFollowers },
+        { path: 'receivedLikes', name: 'receivedLikes', component: receivedLikes},
+        { path: 'receivedMessages', name: 'receivedMessages', component: receivedMessages}
+      ],
+      meta: {
+        requiresAuth: true                   //在进入页面前判断是否登录
+      }
     }
   ]
 
