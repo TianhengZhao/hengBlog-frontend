@@ -321,21 +321,6 @@ import '../assets/jquery.sticky'
             this.$message.error('操作失败！')
           })
       },
-      enable_com(id){
-        const path = 'comment/comments/'+id+'/disableOrEnable'
-        axios.put(path,{
-          "disableOrEnable":false
-        })
-          .then(response => {
-            if (response.data === 'Success') {
-              this.getComments();
-              console.log(response)
-            }
-          })
-          .catch(error => {
-            this.$message.error('取消屏蔽失败！')
-          })
-      },
       del_com(id){
         this.$confirm('确认删除该评论?', '提示', {
           confirmButtonText: '确定',
@@ -503,6 +488,7 @@ import '../assets/jquery.sticky'
     float: right;
     margin-right: 5px;
   }
+
   .info_but{
     font-size: smaller;
     color: #8c939d;
@@ -532,5 +518,7 @@ import '../assets/jquery.sticky'
     width: 90%;
     float: right;
   }
-
+.fansile{
+  width: 100px;
+}
 </style>
