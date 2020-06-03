@@ -1,13 +1,133 @@
 <template>
-
+  <div  v-if="fans" >
+    <div v-if="fans.has_new" class="has_new">
+      <el-button type="text" class="el-icon-circle-check" @click="getNewfans(true)">全部标记已读</el-button>
+    </div>
+    <div v-else class="has_new">
+      <el-button type="text" class="el-icon-check" disabled>全部已读</el-button>
+    </div>
+    <div v-for="(fan, index) in fans.items"  v-bind:key="index" class="fan_item">
+      <el-badge v-if="fan.is_new" is-dot class="red_dot">
+        <router-link v-bind:to="{name:'hisPosts',params:{id:fan.id}}">
+          <img v-bind:src="fan._links.avatar" class="fan_new_ava">
+        </router-link>
+      </el-badge>
+      <router-link v-else v-bind:to="{name:'hisPosts',params:{id:fan.id}}">
+        <img v-bind:src="fan._links.avatar" class="fan_ava">
+      </router-link>
+      <div class="fan_top">
+        <router-link v-bind:to="{name:'hisPosts',params:{id:fan.id}}" class="fan_title">
+          {{fan.username}}
+        </router-link>
+        <span class="fan_title">关注了你</span>
+      </div>
+      <div class="fan_time">
+        <i style="font-style: normal">{{ $moment(fan.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
+      </div>
+    </div>
+    <!----------------------------------------------------------------------------------------->
+    <el-pagination
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+      :current-page=this.fans._meta.page
+      :page-size="5"
+      layout="total,prev, pager, next, jumper"
+      :total="this.fans._meta.total_items">
+    </el-pagination>
+  </div>
 </template>
 
 <script>/* eslint-disable */
-  export default {
-    name: 'receivedFollowers'
+import axios from 'axios'
+import store from '../../store'
+import '../../assets/bootstrap-markdown/js/bootstrap-markdown.js'
+import '../../assets/bootstrap-markdown/js/bootstrap-markdown.zh.js'
+import '../../assets/bootstrap-markdown/js/marked.js'
+import VueMarkdown from 'vue-markdown'    //解析markdown原文为html
+
+export default {
+  name: 'receivedFollowers',
+  data(){
+    return{
+      sharedState: store.state,
+      fans:'',
+    }
+  },
+  methods:{
+    getNewfans(mark){
+      let page = 1
+      const user_id = this.sharedState.user_id
+      const path = 'user/getOnesFans/'+user_id+'?page='+page +'&mark='+mark
+      this.$axios.get(path)
+        .then(response => {
+          if(response.status === 200){
+            console.log(response.data)
+            this.fans = response.data
+          }
+        })
+        .catch(error => {
+          this.$message.error('获取新粉丝失败！')
+        })
+    },
+    handleSizeChange(val) {
+    },
+    handleCurrentChange(val) {                                    //改变页码
+      const user_id = this.sharedState.user_id
+      const path = 'user/getOnesFans/'+user_id+'?page='+page +'&mark='+mark
+      axios.get(path)
+        .then((response)=>{
+          console.log(response.data)
+          this.fans=response.data
+        })
+    }
+  },
+  created () {
+    this.getNewfans(false)
   }
+}
 </script>
 
 <style scoped>
-
+  .has_new{
+    padding: 5px;
+    text-align: left;
+  }
+  .fan_item{
+    border: #eeeeee solid 1px;
+    height: 80px;
+    margin: 5px;
+  }
+  .red_dot{
+    margin: 18px;
+    float: left;
+  }
+  .fan_new_ava{
+    height: 30px;
+    width: 30px;
+    float: left;
+    display: inline;
+  }
+  .fan_ava{
+    height: 30px;
+    width: 30px;
+    margin: 18px;
+    float: left;
+    display: inline;
+  }
+  .fan_top{
+    margin-top: 15px;
+    margin-right: 5px;
+    height: 20px;
+  }
+  .fan_title{
+    float: left;
+    font-size: small;
+  }
+  .fan_time{
+    font-size:12px;
+    color: #8c939d;
+    padding-left: 66px;
+    text-align: left;
+    font-style: normal;
+  }
 </style>

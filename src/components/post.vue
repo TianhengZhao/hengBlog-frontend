@@ -163,7 +163,7 @@ import '../assets/jquery.sticky'
       var checkBody = (rule, value, callback)=>{
         if(value === '')
           callback(new Error('评论不能为空'))
-        else if(value.length>120)
+        else if(value.length>100)
           callback(new Error('评论过长'))
         else callback()
       }

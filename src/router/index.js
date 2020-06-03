@@ -15,6 +15,7 @@ import receivedComments from '../components/notification/receivedComments'
 import receivedFollowers from '../components/notification/receivedFollowers'
 import receivedLikes from '../components/notification/receivedLikes'
 import receivedMessages from '../components/notification/receivedMessages'
+import followedPosts from '../components/notification/followedPosts'
 Vue.use(Router)
 /* eslint-disable */
 const router=new Router({
@@ -76,11 +77,12 @@ const router=new Router({
       path: '/notifications',
       component: notifications,    // 在<router-view>中使用
       children:[
-        { path: '', component: receivedComments }, //         对应/notifications
-        { path: 'receivedComments', name: 'receivedComments', component: receivedComments }, // 对应/notifications/receivedComments
+        { path: '', component: followedPosts }, //         对应/notifications
+        { path: 'followedPosts', name: 'followedPosts', component: followedPosts }, // 对应/notifications/followedPosts
         { path: 'receivedFollowers', name: 'receivedFollowers', component: receivedFollowers },
         { path: 'receivedLikes', name: 'receivedLikes', component: receivedLikes},
-        { path: 'receivedMessages', name: 'receivedMessages', component: receivedMessages}
+        { path: 'receivedMessages', name: 'receivedMessages', component: receivedMessages},
+        { path: 'receivedComments', name: 'receivedComments', component: receivedComments}
       ],
       meta: {
         requiresAuth: true                   //在进入页面前判断是否登录

@@ -1,5 +1,11 @@
 <template>
   <div  v-if="comments" >
+    <div v-if="comments.has_new" class="has_new">
+      <el-button type="text" class="el-icon-circle-check" @click="getNewComments(true)">全部标记已读</el-button>
+    </div>
+    <div v-else class="has_new">
+      <el-button type="text" class="el-icon-check" disabled>全部已读</el-button>
+    </div>
     <div v-for="(comment, index) in comments.items"  v-bind:key="index" class="comment_item">
       <el-badge v-if="comment.is_new" is-dot class="red_dot">
         <router-link v-bind:to="{name:'hisPosts',params:{id:comment.author.id}}">
@@ -84,7 +90,7 @@ export default {
       var checkBody = (rule, value, callback)=>{
         if(value === '')
           callback(new Error('评论不能为空'))
-        else if(value.length>120)
+        else if(value.length>100)
           callback(new Error('评论过长'))
         else callback()
       }
@@ -102,10 +108,10 @@ export default {
       }
     },
   methods:{
-      getNewComments(){
+      getNewComments(mark){
         let page = 1
         const user_id = this.sharedState.user_id
-        const path = 'user/reveivedCommets/'+user_id+'?page='+page
+        const path = 'user/reveivedCommets/'+user_id+'?page='+page+'&mark='+mark
         this.$axios.get(path)
         .then(response => {
           if(response.status === 200){
@@ -120,6 +126,13 @@ export default {
     handleSizeChange(val) {
     },
     handleCurrentChange(val) {                                    //改变页码
+      const user_id = this.sharedState.user_id
+      const path = 'user/reveivedCommets/'+user_id+'?page='+val+'&mark=false'
+      axios.get(path)
+        .then((response)=>{
+          console.log(response.data)
+          this.comments=response.data
+        })
     },
     del_com(id){
       this.$confirm('确认删除该评论?', '提示', {
@@ -135,7 +148,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
-              this.getNewComments()
+              this.getNewComments(false)
               this.contentForm.body=''
               this.contentForm.parentId=0
               this.contentForm.articleId =0
@@ -152,7 +165,7 @@ export default {
       })
         .then(response => {
           if (response.data === 'Success') {
-            this.getNewComments();
+            this.getNewComments(false);
             console.log(response)
           }
         })
@@ -175,7 +188,7 @@ export default {
                   message: '评论成功！',
                   type: 'success'
                 });
-                this.getNewComments()
+                this.getNewComments(false)
                 this.contentForm.body=''
                 this.contentForm.parentId=0
                 this.contentForm.articleId =0
@@ -202,7 +215,7 @@ export default {
     },
   },
   created () {
-      this.getNewComments()
+      this.getNewComments(false)
     $("body").on('click', ".reply", function () {            // 为什么？？？ 为什么body？？？？
       var $comment = $(this).closest('.comment_item');
       console.log($comment)
@@ -214,6 +227,10 @@ export default {
 </script>
 
 <style scoped>
+  .has_new{
+    padding: 5px;
+    text-align: left;
+  }
   .comment_item{
     border: #eeeeee dashed 1px;
     height: 150px;

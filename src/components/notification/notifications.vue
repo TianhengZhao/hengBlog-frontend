@@ -6,7 +6,11 @@
         <div class="ava" ><h2>{{this.user.username}}</h2></div>
       </div>
       <el-divider></el-divider>
-      <el-menu default-active="/notifications/receivedComments" active-text-color="#dd6161" router>
+      <el-menu default-active="/notifications/followedPosts" active-text-color="#dd6161" router>
+        <el-menu-item index="/notifications/followedPosts">
+          <i class="el-icon-document"></i>
+          <span slot="title" class="option">新博客</span>
+        </el-menu-item>
         <el-menu-item index="/notifications/receivedComments">
           <i class="el-icon-chat-line-round"></i>
           <span slot="title" class="option">新评论</span>
