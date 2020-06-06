@@ -111,7 +111,7 @@ export default {
       getNewComments(mark){
         let page = 1
         const user_id = this.sharedState.user_id
-        const path = 'user/reveivedCommets/'+user_id+'?page='+page+'&mark='+mark
+        const path = 'user/receivedComments/'+user_id+'?page='+page+'&mark='+mark
         this.$axios.get(path)
         .then(response => {
           if(response.status === 200){
