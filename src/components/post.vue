@@ -80,6 +80,12 @@
                        class="info_but el-icon-s-release" @click="disableOrEnable_com(items.id, items.disabled)">屏蔽</el-button>
             <el-button v-if='items.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
                        type="text" class="info_but el-icon-delete-solid" @click="del_com(items.id)">删除</el-button>
+            <!---------乱入 为了不窜行 待改------------------------------------------->
+            <el-button v-if='sharedState.is_authenticated && post.author.id !== sharedState.user_id' type="text"
+                      ></el-button>
+            <el-button v-if='items.author.id !== sharedState.user_id && post.author.id !== sharedState.user_id'
+                       type="text" ></el-button>
+            <!---------------------------------------------------------------------->
             <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply" @click="add_des_com(items.id)">回复</el-button>
             <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':items.likers_id.indexOf(sharedState.user_id)!=-1}"
                        class="info_but el-icon-star-off" @click="like_unlike_com(items)">{{items.likers_id.length}}</el-button>  <!--length的使用-->
