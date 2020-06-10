@@ -23,10 +23,6 @@
           <i class="el-icon-user"></i>
           <span slot="title" class="option">新粉丝<el-badge  is-dot class="red_dot display_none" id="badge3"></el-badge></span>
         </el-menu-item>
-        <el-menu-item index="/notifications/receivedMessages">
-          <i class="el-icon-message"></i>
-          <span slot="title" class="option">新私信</span>
-        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-main>

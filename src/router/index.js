@@ -14,7 +14,6 @@ import notifications from '../components/notification/notifications'
 import receivedComments from '../components/notification/receivedComments'
 import receivedFollowers from '../components/notification/receivedFollowers'
 import receivedLikes from '../components/notification/receivedLikes'
-import receivedMessages from '../components/notification/receivedMessages'
 import followedPosts from '../components/notification/followedPosts'
 Vue.use(Router)
 /* eslint-disable */
@@ -81,7 +80,6 @@ const router=new Router({
         { path: 'followedPosts', name: 'followedPosts', component: followedPosts }, // 对应/notifications/followedPosts
         { path: 'receivedFollowers', name: 'receivedFollowers', component: receivedFollowers },
         { path: 'receivedLikes', name: 'receivedLikes', component: receivedLikes},
-        { path: 'receivedMessages', name: 'receivedMessages', component: receivedMessages},
         { path: 'receivedComments', name: 'receivedComments', component: receivedComments}
       ],
       meta: {
@@ -99,7 +97,7 @@ router.beforeEach((to, from, next) => {
       path: '/login',
       query: {redirect: to.fullPath}
     })
-  } else if (token && to.name == 'login') {
+  } else if (token && to.name === 'login') {
     // 用户已登录，但又去访问登录页面时不让他过去
     next({
       path: from.fullPath
