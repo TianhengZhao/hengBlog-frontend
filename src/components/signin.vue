@@ -86,7 +86,7 @@ import router from '../router'
       signin(sForm) {
         this.$refs.sForm.validate((valid) => {    //this.$refs[sForm].validate会显示validate无定义
           if (valid) {
-            axios.post('/auth/signinData', {   //localhost换成ip呢？？？？
+            axios.post('/auth/signinData', {
               username: this.sForm.username,
               password: this.sForm.password,
               email: this.sForm.email,
@@ -98,7 +98,7 @@ import router from '../router'
                     message: '恭喜你，注册成功！',
                     type: 'success'
                   });
-                  store.setNewAction();    //注册成功后，修改store中状态，为什么此处要把is_new更新为true？？？？
+                  store.setNewAction();    //注册成功后，修改store中状态，要把is_new更新为true
                   router.push("/");
                 }
                 else if(response.data === 'Wrong Name'){

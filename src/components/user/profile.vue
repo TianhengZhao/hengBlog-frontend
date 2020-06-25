@@ -13,9 +13,9 @@
       <li v-if="this.user.about_me === null" class="info2"><h6>简介: - </h6></li>
       <li v-else class="info2"><h6>简介:{{this.user.about_me}}</h6></li>
       </ul>
-      <el-button v-if="this.user.id === sharedState.user_id" id="button" type="primary" round @click="editInfo">编辑资料</el-button>
-      <el-button v-else-if="user.is_following === false" id="button" type="primary" round @click="follow(user.id,user.username)">添加关注</el-button> <!--参数不加this-->
-      <el-button v-else id="button" type="danger" round @click="unfollow(user.id,user.username)">取消关注</el-button>
+      <el-button v-if="this.user.id === sharedState.user_id" class="butt" type="primary" round @click="editInfo">编辑资料</el-button>
+      <el-button v-else-if="user.is_following === false" class="butt" type="primary" round @click="follow(user.id,user.username)">添加关注</el-button> <!--参数不加this-->
+      <el-button v-else class="butt" type="danger" round @click="unfollow(user.id,user.username)">取消关注</el-button>
     </el-aside>
     <el-container>
       <div class="wrap">
@@ -63,11 +63,11 @@ import followers from '@/components/user/followers'
               .catch((error) => {
                 // eslint-disable-next-line
                 console.error(error)
-                //this.$router.push("/NotFound")                  这里的问题还没解决
+
               });
           },
-          editInfo(e){
-            this.$router.push("/user/editProfile")   // 为什么/login就uncaught promise？？？？
+          editInfo(){
+            this.$router.push("/thisuser/editProfile")
           },
           follow(id, name){
             const path = '/user/follow/'+id
@@ -171,7 +171,7 @@ import followers from '@/components/user/followers'
     display: table;
     clear: both;
   }
-  #button{
+  .butt{
     margin: 20px;
   }
   .wrap{

@@ -60,7 +60,7 @@ const router=new Router({
 
     },
     {
-      path: '/user/editProfile',
+      path: '/thisuser/editProfile',
       name: 'editProfile',
       component: editProfile,
       meta: {

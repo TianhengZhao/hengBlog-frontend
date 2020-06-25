@@ -1,11 +1,15 @@
-import Vue from 'vue'
+
 import axios from 'axios'
 import router from './router'
 import store from './store'
 // 基础配置
 axios.defaults.timeout = 5000 // 超时时间
-axios.defaults.baseURL = 'http://localhost:5000'
-
+// axios.defaults.baseURL = 'http://localhost:5000'
+if (process.env.NODE_ENV === 'production') {
+  axios.defaults.baseURL = 'http://129.211.132.225:5000'
+} else {
+  axios.defaults.baseURL = 'http://127.0.0.1:5000'
+}
 // 请求拦截器
 axios.interceptors.request.use(function (config) {
   const token = window.localStorage.getItem('token')
@@ -40,7 +44,8 @@ axios.interceptors.response.use(function (response) {
             path: '/login',
             query: { redirect: router.currentRoute.path }
           })
-        }*/
+        }
+        */
         break
 
       case 403:

@@ -14,8 +14,6 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-          <el-checkbox label="记住密码" name="remember" id="rem" v-model="form.rem">
-          </el-checkbox>
         <el-link type="primary" id="signin" @click="signin">注册</el-link>
       </el-form-item>
       <el-button type="primary" icon="el-icon-user-solid" @click="login(form)">登 录</el-button>
@@ -65,14 +63,15 @@ import store from '../store'
             })
                .then((response) => {
                  console.log(response)
-                 if (response.data != false) {
-                   store.resetNotNewAction();  //登录成功后，修改store中状态，为什么此处把is_new变成false？？？？
+                 if (response.data !== false) {
+                   store.resetNotNewAction();
                    window.localStorage.setItem('token',response.data );   //存入token值
                    store.loginAction();        //is_authenticated变为true
                    this.$router.push("/");
                  }
-                 else if(response.data === false){
+                 else if(response.data === false){                    // 在flask里return 'false'
                    this.$message.error('用户名或密码错误！');
+
                  }
 
                })

@@ -54,7 +54,7 @@ import store from '../../store.js'
           .catch((error) => {
             // eslint-disable-next-line
             console.error(error)
-            //this.$router.push("/NotFound")                        这里的问题还没解决
+
           });
       },
       submit(form){

@@ -49,7 +49,7 @@ export default {
   name: 'followedPosts',
 
   components:{
-    VueMarkdown                           //什么意思？？？？
+    VueMarkdown
   },
   data(){
     return{

@@ -52,7 +52,7 @@ export default {
     name: 'hisPosts',
 
     components:{
-    VueMarkdown                           //什么意思？？？？
+    VueMarkdown
   },
     data(){
       return{

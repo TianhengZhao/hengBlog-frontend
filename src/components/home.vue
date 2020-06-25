@@ -32,7 +32,7 @@
         </vue-markdown>
         </div>
         <div class="post_bottom">
-        <div class="buttons" v-if="items.author && items.author.id == sharedState.user_id">
+        <div class="buttons" v-if="items.author && items.author.id === sharedState.user_id">
           <el-button size="mini"  icon="el-icon-delete" circle type="danger" @click="del(items.id)"></el-button>
         </div>
           <div class="info">

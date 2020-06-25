@@ -376,7 +376,7 @@ import '../assets/jquery.sticky'
       this.getPost()
       this.getComments()
       $(document).ready(function () {
-        $("body").on('click', ".reply", function () {            // 为什么？？？ 为什么body？？？？
+        $("body").on('click', ".reply", function () {            // body!!!!!!!!!!!!!!!!!
           var $comment = $(this).closest('.comment_item');
           if($comment.hasClass('child')) {
             $('#addComment').addClass('alt_width')

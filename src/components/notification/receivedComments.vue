@@ -216,7 +216,7 @@ export default {
   },
   created () {
       this.getNewComments(false)
-    $("body").on('click', ".reply", function () {            // 为什么？？？ 为什么body？？？？
+    $("body").on('click', ".reply", function () {
       var $comment = $(this).closest('.comment_item');
       console.log($comment)
       $('#addComment').removeClass('display_none')
