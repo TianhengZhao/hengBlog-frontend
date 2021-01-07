@@ -1,5 +1,5 @@
 <template>
-  <!-------------------------------------------------展示文章------------------------------------------------->
+  <!-- 展示文章 -->
   <div class="container" v-if="post">
     <div class="title"><h3 class="el-icon-tickets">{{this.post.title}}</h3></div>
     <div class="summary"><span>{{this.post.summary}}</span></div>
@@ -25,10 +25,10 @@
      >
     </vue-markdown>
     </div>
-    <!-------------------------------------------------显示评论------------------------------------------------->
+    <!-- 显示评论 -->
     <div class="divide">
     <el-divider><i class="el-icon-chat-line-round">评论区</i></el-divider>
-      <!-----------------------进行一级评论------------------------------->
+      <!-- 进行一级评论 -->
       <el-form v-if="sharedState.is_authenticated" :model="contentForm" :rules="rules" ref="contentForm">
        <el-form-item prop="body">
          <el-input type="textarea" v-model="contentForm.body" class="com_content"></el-input>
@@ -40,7 +40,7 @@
         description="登录后方可发表评论！"
         show-icon>
       </el-alert>
-      <!-----------------------进行子评论------------------------------->
+      <!-- 进行子评论 -->
       <el-form  :model="descontentForm" :rules="rules" ref="descontentForm" id="addComment" class="display_none">
         <el-form-item prop="body">
           <el-input type="textarea" v-model="descontentForm.body" class="des_content"></el-input>
@@ -48,9 +48,9 @@
         <el-button type="primary"  class="but" size="mini" @click="submit_des(descontentForm)">评 论</el-button>
         <el-button class="but" size="mini" @click="cancle_com">取 消</el-button>
       </el-form>
-      <!-----------------------------------------显示一级评论--------------------------------------------->
+      <!-- 显示一级评论 -->
       <div v-if="comments" id="panel">
-        <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_container"> <!--一级评论＋子评论容器-->
+        <div v-for="(items, index) in comments.items"  v-bind:key="index" class="comment_container"> <!-- 一级评论＋子评论容器 -->
           <div class="comment_item">
           <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
             <img v-bind:src="items.author._links.avatar" class="comment_ava">
@@ -61,7 +61,7 @@
             </router-link>
           </div>
           <div class="comment_time">
-            <i style="font-style: normal">{{ $moment(items.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
+            <i style="font-style: normal">{{ $moment(items.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!-- 去掉i标签斜体样式 -->
           </div>
           <div v-if="!items.disabled" class="comment_body">
             <vue-markdown
@@ -80,12 +80,12 @@
                        class="info_but el-icon-s-release" @click="disableOrEnable_com(items.id, items.disabled)">屏蔽</el-button>
             <el-button v-if='items.author.id === sharedState.user_id || post.author.id === sharedState.user_id'
                        type="text" class="info_but el-icon-delete-solid" @click="del_com(items.id)">删除</el-button>
-            <!---------乱入 为了不窜行 待改------------------------------------------->
+            <!-- 乱入 为了不窜行 待改 -->
             <el-button v-if='sharedState.is_authenticated && post.author.id !== sharedState.user_id' type="text"
                       ></el-button>
             <el-button v-if='items.author.id !== sharedState.user_id && post.author.id !== sharedState.user_id'
                        type="text" ></el-button>
-            <!---------------------------------------------------------------------->
+            <!-- 分隔 -->
             <el-button v-if='sharedState.is_authenticated' type="text" class="info_but el-icon-s-comment reply" @click="add_des_com(items.id)">回复</el-button>
             <el-button v-if='sharedState.is_authenticated ' type="text" v-bind:class="{'active_like':items.likers_id.indexOf(sharedState.user_id)!=-1}"
                        class="info_but el-icon-star-off" @click="like_unlike_com(items)">{{items.likers_id.length}}</el-button>  <!--length的使用-->
@@ -94,7 +94,7 @@
             <el-button v-if='sharedState.is_authenticated && post.author.id === sharedState.user_id' type="text"
                        class="info_but el-icon-document-remove" @click="disableOrEnable_com(items.id, items.disabled)">取消屏蔽</el-button>
           </div>
-          <!-----------------------------------------------------显示子评论----------------------------------------------->
+          <!-- 显示子评论 -->
             <div v-if="items.descendants" v-for="(des_com, dindex) in items.descendants"  v-bind:key="dindex" class="des_item">
           <router-link v-bind:to="{name:'hisPosts',params:{id:items.author.id}}">
             <img v-bind:src="des_com.author._links.avatar" class="comment_ava">
@@ -105,7 +105,7 @@
             </router-link>
           </div>
           <div class="comment_time">
-            <i style="font-style: normal">{{ $moment(des_com.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!--去掉i标签斜体样式-->
+            <i style="font-style: normal">{{ $moment(des_com.timestamp).format('YYYY/MM/DD H:mm') }}</i>  <!-- 去掉i标签斜体样式 -->
           </div>
           <div v-if="!des_com.disabled" class="comment_body">
             <router-link v-bind:to="{name:'hisPosts',params:{id:des_com.parent.author.id}}" class="comment_summary">
