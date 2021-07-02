@@ -1,15 +1,16 @@
-
 import axios from 'axios'
 import router from './router'
 import store from './store'
 // 基础配置
 axios.defaults.timeout = 5000 // 超时时间
-// axios.defaults.baseURL = 'http://localhost:5000'
+axios.defaults.baseURL = 'http://localhost:5000'
+/*
 if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = 'http://129.211.132.225:5000'
 } else {
   axios.defaults.baseURL = 'http://127.0.0.1:5000'
 }
+*/
 // 请求拦截器
 axios.interceptors.request.use(function (config) {
   const token = window.localStorage.getItem('token')
@@ -18,20 +19,15 @@ axios.interceptors.request.use(function (config) {
   }
   return config
 }, function (error) {
-  // Do something with request error
   return Promise.reject(error)
 })
-
 // 响应拦截器
-
 axios.interceptors.response.use(function (response) {
-  // Do something with response data
   return response
 }, function (error) {
   if (typeof error.response === 'undefined') {
     this.$message.error('无法连接Flask API，请联系管理员')
   } else {
-    // Do something with response error
     switch (error.response.status) {
       case 401:
         // 清除 Token 及 已认证 等状态

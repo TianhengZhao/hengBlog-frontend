@@ -1,0 +1,32 @@
+@import "./style.scss";
+.f_wrap{
+    height: 88px;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  .f_ava{
+    height: 40px;
+    width: 40px;
+    margin: 20px;
+    float: left;
+  }
+  .f_top{
+    margin-top: 17px;
+    margin-right: 5px;
+    height: 25px;
+  }
+  .f_name{
+    float: left;
+  }
+  .f_about{
+    float: left;
+    font-size: small;
+    height: 24px;
+    text-align: left;
+  }
+  .f_button{
+    float: right;
+    margin-right: 10px;
+    margin-top: -16px;
+  }

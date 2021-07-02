@@ -1,0 +1,454 @@
+/*
+  不该把所有文件的样式都写到全局
+  应每个vue有自己的style scoped
+  但抽离后发现若干文件的样式有依赖关系
+  挨个找出依赖的样式太麻烦了 浪费时间
+  所以又把全局样式给恢复了 已经抽离出去的也不想改了
+  先这样吧 下次设计样式时注意 吸取教训
+*/
+/*------------------------变量-----------------------------*/
+$yel_color:#ffd04b;
+$dep_color:#545c64;
+$hov_color:#303133;
+$bla_color:#2c3e50;
+$gre_color:#bebebe;
+$sha_color:#eaeaea;
+$red_color:#dd6161;
+@mixin comment_summary{
+  float: left;
+  font-size: small;
+  height: 24px;
+  text-align: left;
+  color: $bla_color;
+}
+@mixin container_in{
+  width: 100%;
+  height: 100%;
+}
+@mixin hov{
+  background-color: $hov_color;
+  color: $yel_color;
+}
+/*------------------------nav-----------------------------*/
+.display_none{
+  display: none;
+}
+.sett{
+  float: right;
+}
+/*------------------------post-----------------------------*/
+.container {
+  width:80%;
+  margin: auto;
+  padding-top: 20px;
+}
+.container:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+.title{
+  margin:20px;
+}
+.summary{
+  margin:20px;
+  font-style: oblique;
+}
+.name_link{
+  color: $bla_color;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+.body{
+  width: 100%;
+  text-align: left;
+}
+.body:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+.post_com_but{
+  float: left;
+  margin-bottom: 5px;
+}
+.info{
+  float: right;
+  font-size: smaller;
+  color: $gre_color;
+}
+.function{
+  height: 40px;
+}
+.divide{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+.but{
+  margin-bottom: 15px;
+}
+.comment_container:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+.comment_item{
+  border: $gre_color dashed 1px;
+  height: 150px;
+  margin: 5px;
+}
+.comment_ava{
+  height: 30px;
+  width: 30px;
+  margin: 18px;
+  float: left;
+  display: inline;
+}
+.comment_disable{
+  width: 80%;
+  margin:auto;
+  height: 60px;
+}
+.comment_top{
+  margin-top: 15px;
+  margin-right: 5px;
+  height: 25px;
+}
+.comment_title{
+  float: left;
+  color: $bla_color;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+.comment_time {
+  font-size: 0.75rem;
+  color: $gre_color;
+  padding-left: 66px;
+  text-align: left;
+  font-style: normal;
+}
+.comment_body{
+  height: 60px;
+  overflow: auto;
+}
+.comment_summary{
+  @include comment_summary;
+}
+.comment_summary_name{
+  @include comment_summary;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+.comment_info{
+  height: 28px;
+  float: right;
+  margin-right: 5px;
+}
+.info_but{
+  font-size: smaller;
+  color: $bla_color;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+
+.active_like{
+  color: $red_color;
+}
+.des_item{
+  margin-top: 5px;
+  width: 90%;
+  float: right;
+  border: $gre_color dashed 1px;
+}
+.des_item:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+.alt_width{
+  width: 90%;
+  float: right;
+}
+.fansile{
+  width: 100px;
+}
+/*------------------------home------------------------*/
+#panel{
+  margin-top:20px;
+  margin-bottom: 20px;
+}
+.post_item{
+  border: $gre_color solid 1px;
+  border-radius: 5px;
+  height: 150px;
+  margin: 5px;
+}
+.post_ava{
+  height: 50px;
+  width: 50px;
+  margin: 20px;
+  float: left;
+  display: inline;
+}
+.post_name{
+  float: right;
+  font-size: small;
+  color: $bla_color;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+.post_top{
+  margin-top: 20px;
+  margin-right: 5px;
+  height: 30px;
+}
+.post_title{
+  float: left;
+  font-size: large;
+  color: $bla_color;
+  &:hover{
+    color: $yel_color ;
+  }
+}
+.post_body{
+  height: 64px;
+  overflow: auto;
+}
+.post_summary{
+  float: left;
+  font-size: small;
+  height: 24px;
+  text-align: left;
+}
+.buttons{
+  display: inline;
+  float: left;
+  margin-left: 90px;
+}
+.info {
+  float: right;
+  font-size: smaller;
+  color: $gre_color;
+  margin-right: 5px;
+  display: inline;
+}
+/*------------------------login------------------------*/
+.img_login {
+  width:120px;
+  height:120px;
+}
+.container_login {
+  @include container_in;
+  margin-top: 10px;
+}
+.login-page {
+  border-radius: 5px;
+  margin: auto;
+  width: 40%;
+  padding: 35px 55px 15px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px $gre_color;
+}
+#signin {
+  float: right;
+  &:hover{
+    color: $yel_color ;
+    text-decoration: $yel_color ;
+  }
+}
+/*------------------------sign in------------------------*/
+.container_50 {
+  @include container_in;
+  margin-top: 50px;
+}
+.sForm{
+  margin: auto;
+  width: 45%;
+}
+/*-------------------------profile---------------------*/
+.ava{
+  float: left;
+  margin: 15px;
+}
+.info1{
+  margin-top: 20px;
+  display: inline-block;
+}
+.aside{
+  border-radius: 5px;
+  box-shadow: 0 0 10px $gre_color;
+  width: 22%;
+  height: 100%;
+  position:fixed;
+  overflow: auto;
+}
+.info1 img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+
+}
+.info2{
+  text-align: left;
+  list-style: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+#list:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+.butt{
+  margin: 20px;
+  background-color: $dep_color;
+  border: none;
+  &:hover{
+    @include hov;
+  }
+}
+.wrap{
+  width: 75%;
+  height: 500px;
+  overflow: auto;
+  margin-left: 25%;
+}
+#menu{
+  height: 30px;
+  margin: 20px;
+  padding-left: 0;
+}
+#menu li{
+  background-color: $dep_color;
+  display: block;
+  float: left;
+}
+.nav-link{
+  color: white;
+  font-size: small;
+  &:hover{
+    @include hov;
+  }
+  &:active{
+    background-color: $hov_color;
+    color: $yel_color;
+  }
+}
+.route{
+  float: left;
+  margin-left: 30px;
+  margin-top: 5px;
+  width: 80%;
+}
+/*-----------------hisposts------------------------*/
+.total{
+  padding: 5px;
+  text-align: left;
+  color: $gre_color;
+  font-size: smaller;
+  margin-bottom: 20px;
+}
+.hp_del_but{
+  display: inline;
+  float: left;
+  margin-left: 90px;
+}
+.hp_info{
+  float: right;
+  font-size: smaller;
+  color: $gre_color;
+  margin-right: 5px;
+  display: inline;
+}
+/*-----------------following+followers------------------*/
+.f_wrap{
+  height: 88px;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  margin: 5px;
+}
+.f_ava{
+  height: 40px;
+  width: 40px;
+  margin: 20px;
+  float: left;
+}
+.f_top{
+  margin-top: 17px;
+  margin-right: 5px;
+  height: 25px;
+}
+.f_name{
+  float: left;
+}
+.f_about{
+  float: left;
+  font-size: small;
+  height: 24px;
+  text-align: left;
+}
+.f_button{
+  float: right;
+  margin-right: 10px;
+  margin-top: -16px;
+}
+/*---------------edit profile--------------------*/
+.sex{
+  float: left;
+  margin-top: 12px;
+}
+/*---------------received--------------------*/
+.has_new{
+  padding: 5px;
+  text-align: left;
+}
+.red_dot{
+  margin: 18px;
+  float: left;
+}
+.comment_title_info{
+  @extend .comment_title;
+  font-size: small;
+
+}
+.comment_title_s{
+  float: left;
+  font-size: small;
+}
+.comment_new_ava{
+  height: 30px;
+  width: 30px;
+  float: left;
+  display: inline;
+}
+.comment_parent{
+  float: left;
+  font-size: small;
+  color: $bla_color;
+  &:hover{
+    color: $yel_color;
+  }
+}
+.r_item{
+  border: #eeeeee solid 1px;
+  height: 80px;
+  margin: 5px;
+}
+.r_new_ava{
+  height: 30px;
+  width: 30px;
+  float: left;
+  display: inline;
+}
+.r_top{
+  margin-top: 15px;
+  margin-right: 5px;
+  height: 20px;
+}
+
+

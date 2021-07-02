@@ -1,0 +1,48 @@
+@import "./style.scss";
+.has_new{
+    padding: 5px;
+    text-align: left;
+  }
+  .red_dot{
+    margin: 18px;
+    float: left;
+  }
+  .comment_title_info{
+    @extend .comment_title;
+    font-size: small;
+  
+  }
+  .comment_title_s{
+    float: left;
+    font-size: small;
+  }
+  .comment_new_ava{
+    height: 30px;
+    width: 30px;
+    float: left;
+    display: inline;
+  }
+  .comment_parent{
+    float: left;
+    font-size: small;
+    color: $bla_color;
+    &:hover{
+      color: $yel_color;
+    }
+  }
+  .r_item{
+    border: #eeeeee solid 1px;
+    height: 80px;
+    margin: 5px;
+  }
+  .r_new_ava{
+    height: 30px;
+    width: 30px;
+    float: left;
+    display: inline;
+  }
+  .r_top{
+    margin-top: 15px;
+    margin-right: 5px;
+    height: 20px;
+  }
